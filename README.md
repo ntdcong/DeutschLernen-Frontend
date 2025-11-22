@@ -1,48 +1,67 @@
-# ./
+# Germanly 🇩🇪
 
-This template should help get you started developing with Vue 3 in Vite.
+**Germanly** là một nền tảng học tiếng Đức hiện đại, tập trung vào trải nghiệm người dùng mượt mà và hiệu quả học tập thông qua phương pháp Flashcard và các công cụ hỗ trợ thông minh.
 
-## Recommended IDE Setup
+Dự án được xây dựng với mục tiêu đơn giản hóa việc học từ vựng và ngữ pháp, giúp người học tiếp cận tiếng Đức một cách tự nhiên và thú vị hơn.
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## 🚀 Công nghệ sử dụng
 
-## Recommended Browser Setup
+Dự án sử dụng các công nghệ web hiện đại nhất để đảm bảo hiệu năng và trải nghiệm phát triển tốt nhất:
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) 
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+- **Core Framework:** [Vue 3](https://vuejs.org/) (Composition API)
+- **Build Tool:** [Vite](https://vitejs.dev/) - Tốc độ build và HMR cực nhanh.
+- **Language:** [TypeScript](https://www.typescriptlang.org/) - Đảm bảo type safety và code chất lượng.
+- **Styling:** [Tailwind CSS v4](https://tailwindcss.com/) - Thiết kế giao diện nhanh chóng, hiện đại và responsive.
+- **State Management:** [Pinia](https://pinia.vuejs.org/) - Quản lý trạng thái ứng dụng hiệu quả.
+- **Routing:** [Vue Router](https://router.vuejs.org/)
+- **HTTP Client:** [Axios](https://axios-http.com/)
 
-## Type Support for `.vue` Imports in TS
+## ✨ Tính năng chính
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+### 1. Hệ thống Flashcard thông minh
+- **Quản lý bộ từ (Decks):** Tạo, sửa, xóa và quản lý các bộ từ vựng cá nhân.
+- **Tìm kiếm & Sắp xếp:** Dễ dàng tìm kiếm bộ từ và sắp xếp theo thời gian hoặc số lượng từ vựng.
+- **Chế độ học (Learn Mode):** Giao diện học tập tương tác, lật thẻ, đánh giá mức độ ghi nhớ.
 
-## Customize configuration
+### 2. Quản lý người dùng
+- **Authentication:** Đăng ký và đăng nhập bảo mật.
+- **Personalization:** Dữ liệu học tập được lưu trữ riêng biệt cho từng người dùng.
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+### 3. Giao diện & Trải nghiệm (UI/UX)
+- **Responsive Design:** Tối ưu hiển thị trên mọi thiết bị (Mobile, Tablet, Desktop).
+- **Dark Mode:** Hỗ trợ giao diện sáng/tối (tùy chỉnh theo hệ thống hoặc cài đặt).
+- **Modern UI:** Thiết kế sạch sẽ, tối giản với các hiệu ứng micro-interactions tinh tế.
 
-## Project Setup
+## 🛠 Xử lý dữ liệu & Kiến trúc
 
-```sh
-npm install
-```
+- **State Management:** Sử dụng **Pinia** để quản lý global state (Auth, Decks, Learning Session). Các store được module hóa để dễ dàng bảo trì.
+- **API Integration:** **Axios** được cấu hình với interceptors để tự động xử lý JWT token và các lỗi mạng chung.
+- **Component Design:** Áp dụng kiến trúc Atomic Design cơ bản, tách biệt các UI components (Buttons, Inputs) và Feature components (DeckList, Flashcard).
 
-### Compile and Hot-Reload for Development
+## 📦 Cài đặt và Chạy dự án
 
-```sh
-npm run dev
-```
+Đảm bảo bạn đã cài đặt [Node.js](https://nodejs.org/) (phiên bản 18+ khuyến nghị).
 
-### Type-Check, Compile and Minify for Production
+1. **Clone dự án:**
+   ```bash
+   git clone https://github.com/ntdcong/DeutschLernen-Frontend.git
+   cd DeutschLernen-Frontend
+   ```
 
-```sh
-npm run build
-```
+2. **Cài đặt dependencies:**
+   ```bash
+   npm install
+   ```
 
-### Lint with [ESLint](https://eslint.org/)
+3. **Chạy môi trường phát triển:**
+   ```bash
+   npm run dev
+   ```
+   Truy cập `http://localhost:5173` để xem ứng dụng.
 
-```sh
-npm run lint
-```
+4. **Build cho production:**
+   ```bash
+   npm run build
+   ```
+
+*Developed with Food by Duy Cong*
