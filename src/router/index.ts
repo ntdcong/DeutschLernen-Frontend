@@ -48,6 +48,18 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
+      path: '/decks/:id/add',
+      name: 'AddWords',
+      component: () => import('@/views/FlashcardAddWordsPage.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/decks/:id/edit',
+      name: 'EditWords',
+      component: () => import('@/views/FlashcardEditWordsPage.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
       path: '/profile',
       name: 'Profile',
       component: ProfilePage,
