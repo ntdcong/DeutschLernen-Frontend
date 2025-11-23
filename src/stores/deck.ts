@@ -110,7 +110,9 @@ export const useDeckStore = defineStore('deck', () => {
     }
   }
 
-  // Fetch word counts for all decks if missing
+  // Legacy fallback: Fetch word counts for decks if missing
+  // Note: wordCount is now included in the API response by default,
+  // so this method should rarely be needed
   async function fetchWordCounts() {
     const decksToFetch = decks.value.filter(d => d.wordCount == null)
     if (decksToFetch.length === 0) return

@@ -6,6 +6,7 @@ import RegisterPage from '@/views/RegisterPage.vue'
 import DashboardPage from '@/views/DashboardPage.vue'
 import FlashcardDeckPage from '@/views/FlashcardDeckPage.vue'
 import FlashcardLearnPage from '@/views/FlashcardLearnPage.vue'
+import ProfilePage from '@/views/ProfilePage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -44,6 +45,12 @@ const router = createRouter({
       path: '/decks/:id/learn',
       name: 'LearnFlashcard',
       component: FlashcardLearnPage,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/profile',
+      name: 'Profile',
+      component: ProfilePage,
       meta: { requiresAuth: true }
     }
   ]

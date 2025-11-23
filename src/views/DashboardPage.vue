@@ -2,7 +2,7 @@
   <div class="relative flex min-h-screen w-full bg-background-light dark:bg-background-dark">
     <Sidebar />
 
-    <main class="flex-1 p-4 text-text-primary-light sm:p-6 lg:p-8 dark:text-text-primary-dark">
+    <main class="flex-1 p-4 pt-16 text-text-primary-light sm:p-6 lg:p-8 lg:pt-8 dark:text-text-primary-dark">
       <div class="mx-auto max-w-4xl">
         <!-- Header -->
         <div class="mb-8">
@@ -12,7 +12,6 @@
             Chào mừng trở lại, {{ authStore.user?.fullName || 'User' }}!
           </h1>
           <p class="mt-2 text-base font-normal leading-normal text-text-secondary-light dark:text-text-secondary-dark">
-            Hãy cùng chinh phục tiếng Đức ngay hôm nay nào.
           </p>
         </div>
 

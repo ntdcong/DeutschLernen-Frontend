@@ -320,13 +320,13 @@ function playAudio() {
 }
 
 // Data Loading Functions
-async function loadWordCount() {
+async function loadDeckInfo() {
   try {
-    const response = await deckService.getWordCount(deckId.value)
-    totalWords.value = response.data.count
+    const response = await deckService.getDeck(deckId.value)
+    totalWords.value = response.data.wordCount || 0
   } catch (err) {
-    console.error('Failed to load word count:', err)
-    throw new Error('Không thể tải số lượng từ vựng')
+    console.error('Failed to load deck info:', err)
+    throw new Error('Không thể tải thông tin bộ từ vựng')
   }
 }
 
@@ -401,18 +401,13 @@ async function initialize() {
       Object.values(cache.words).forEach(w => loadedWords.value.set(w.id, w))
       totalWords.value = cache.totalWords
       currentIndex.value = cache.currentIndex
-      
-      // Ensure we have words for current index (in case cache is partial)
-      // But cache.words should have what we loaded.
-      // If batch loading, we might need to check if we need more.
-      // For now assume cache is good enough or we just load next batch if needed.
       checkAndPrefetchNextBatch()
       
       loading.value = false
       return
     }
 
-    await loadWordCount()
+    await loadDeckInfo()
     if (totalWords.value === 0) {
       loading.value = false
       return

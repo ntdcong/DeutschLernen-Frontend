@@ -1,81 +1,101 @@
 <template>
-  <aside
-    class="sticky top-0 hidden h-screen w-64 flex-col border-r border-border-light bg-surface-light dark:border-border-dark dark:bg-surface-dark lg:flex"
-  >
-    <div class="flex h-full flex-col justify-between p-4">
-      <div class="flex flex-col gap-4">
-        <!-- User Profile -->
-        <div class="flex items-center gap-3 p-2">
-          <div class="size-10 rounded-full bg-gradient-to-br from-primary to-primary-yellow flex items-center justify-center text-white font-bold">
-            {{ userInitials }}
+  <div>
+    <button
+      v-if="!isMobileMenuOpen"
+      @click="toggleMobileMenu"
+      class="fixed left-4 top-4 z-[100] flex size-10 items-center justify-center rounded-full bg-white text-black shadow-md transition-all hover:bg-gray-100 lg:hidden"
+      aria-label="Open mobile menu"
+    >
+      <span class="material-symbols-outlined text-xl">menu</span>
+    </button>
+
+    <button
+      v-if="!isDesktopSidebarOpen"
+      @click="toggleDesktopSidebar"
+      class="fixed left-4 top-4 z-[40] hidden size-10 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-600 shadow-sm transition-all hover:bg-gray-50 lg:flex dark:border-gray-700 dark:bg-surface-dark dark:text-gray-300"
+      aria-label="Open desktop sidebar"
+    >
+      <span class="material-symbols-outlined text-xl">dock_to_right</span>
+    </button>
+
+    <Transition name="fade">
+      <div
+        v-if="isMobileMenuOpen"
+        @click="closeMobileMenu"
+        class="fixed inset-0 z-[90] bg-black/50 lg:hidden"
+      ></div>
+    </Transition>
+
+    <Transition name="slide">
+      <aside
+        v-show="shouldShowSidebar"
+        class="fixed inset-y-0 left-0 z-[95] flex h-screen w-64 flex-col border-r border-gray-200 bg-white transition-all duration-300 lg:sticky lg:top-0 lg:z-0 dark:border-gray-700 dark:bg-[#1a1a1a]"
+      >
+        <div class="flex items-center justify-between p-4">
+          <div class="flex items-center gap-3 overflow-hidden">
+             <div class="flex size-8 shrink-0 items-center justify-center rounded-full bg-gray-900 font-bold text-white dark:bg-white dark:text-black">
+                {{ userInitials }}
+            </div>
+            <div class="flex min-w-0 flex-col">
+                <h1 class="truncate text-sm font-bold text-gray-900 dark:text-white">
+                  {{ authStore.user?.fullName || 'Germanly User' }}
+                </h1>
+            </div>
           </div>
-          <div class="flex flex-col">
-            <h1 class="text-base font-semibold leading-normal text-text-primary-light dark:text-text-primary-dark">
-              {{ authStore.user?.fullName || 'User' }}
-            </h1>
-            <p class="text-sm font-normal leading-normal text-text-secondary-light dark:text-text-secondary-dark">
-              {{ roleLabel }}
-            </p>
-          </div>
+
+          <button 
+            @click="handleCloseSidebar"
+            class="flex size-8 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
+          >
+            <span class="material-symbols-outlined text-xl">
+                {{ isDesktop ? 'dock_to_left' : 'close' }}
+            </span>
+          </button>
         </div>
 
-        <!-- Navigation Links -->
-        <nav class="flex flex-col gap-2">
-          <router-link
-            to="/dashboard"
-            class="flex items-center gap-3 rounded-lg px-3 py-2"
-            :class="isActive('/dashboard') ? 'bg-primary/10 text-primary dark:bg-primary/20' : 'hover:bg-black/5 dark:hover:bg-white/5'"
-          >
-            <span class="material-symbols-outlined" :class="{ 'fill': isActive('/dashboard') }">dashboard</span>
-            <p class="text-sm font-medium leading-normal">Dashboard</p>
-          </router-link>
+        <div class="flex flex-1 flex-col justify-between overflow-y-auto p-3">
+          <div class="flex flex-col gap-2">
+            
+            <router-link
+              v-for="item in navItems"
+              :key="item.path"
+              :to="item.path"
+              @click="handleNavClick"
+              class="group flex items-center gap-3 rounded-lg px-3 py-2.5 transition-all duration-200"
+              :class="getLinkClass(item.path)"
+            >
+              <span class="material-symbols-outlined text-[22px]" :class="{ 'fill-current': isActive(item.path) }">
+                {{ item.icon }}
+              </span>
+              <p class="text-sm font-medium">{{ item.label }}</p>
+            </router-link>
 
-          <router-link
-            to="/decks"
-            class="flex items-center gap-3 rounded-lg px-3 py-2"
-            :class="isActive('/decks') ? 'bg-primary/10 text-primary dark:bg-primary/20' : 'hover:bg-black/5 dark:hover:bg-white/5'"
-          >
-            <span class="material-symbols-outlined" :class="{ 'fill': isActive('/decks') }">translate</span>
-            <p class="text-sm font-medium leading-normal">Học Từ Vựng</p>
-          </router-link>
+            <div class="my-2 border-t border-gray-200 dark:border-gray-700"></div>
+            <p class="px-3 text-xs font-bold uppercase text-gray-400">Sắp ra mắt</p>
+            
+            <a v-for="item in disabledItems" :key="item.label" class="flex cursor-not-allowed items-center gap-3 rounded-lg px-3 py-2.5 text-gray-400 opacity-60 grayscale hover:bg-gray-50 dark:hover:bg-white/5" href="#">
+              <span class="material-symbols-outlined text-[22px]">{{ item.icon }}</span>
+              <p class="text-sm font-medium">{{ item.label }}</p>
+            </a>
+          </div>
 
-          <a class="flex items-center gap-3 rounded-lg px-3 py-2 opacity-50 cursor-not-allowed" href="#">
-            <span class="material-symbols-outlined">menu_book</span>
-            <p class="text-sm font-medium leading-normal">Ngữ Pháp</p>
-          </a>
-
-          <a class="flex items-center gap-3 rounded-lg px-3 py-2 opacity-50 cursor-not-allowed" href="#">
-            <span class="material-symbols-outlined">mic</span>
-            <p class="text-sm font-medium leading-normal">Luyện Phát Âm</p>
-          </a>
-
-          <a class="flex items-center gap-3 rounded-lg px-3 py-2 opacity-50 cursor-not-allowed" href="#">
-            <span class="material-symbols-outlined">smart_toy</span>
-            <p class="text-sm font-medium leading-normal">Học cùng AI</p>
-          </a>
-        </nav>
-      </div>
-
-      <!-- Settings and Logout -->
-      <div class="flex flex-col gap-1">
-        <a class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-black/5 dark:hover:bg-white/5" href="#">
-          <span class="material-symbols-outlined">settings</span>
-          <p class="text-sm font-medium leading-normal">Cài đặt</p>
-        </a>
-        <button
-          @click="handleLogout"
-          class="flex items-center gap-3 rounded-lg px-3 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
-        >
-          <span class="material-symbols-outlined">logout</span>
-          <p class="text-sm font-medium leading-normal">Đăng xuất</p>
-        </button>
-      </div>
-    </div>
-  </aside>
+          <div class="flex flex-col gap-1 border-t border-gray-200 pt-3 dark:border-gray-700">
+            <button
+              @click="handleLogout"
+              class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20"
+            >
+              <span class="material-symbols-outlined">logout</span>
+              <p class="text-sm font-medium">Đăng xuất</p>
+            </button>
+          </div>
+        </div>
+      </aside>
+    </Transition>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
@@ -83,32 +103,152 @@ const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
 
+// --- Configuration Data ---
+const navItems = [
+  { path: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
+  { path: '/decks', label: 'Học Từ Vựng', icon: 'translate' },
+  { path: '/profile', label: 'Hồ sơ', icon: 'person' },
+]
+
+const disabledItems = [
+  { label: 'Ngữ Pháp', icon: 'menu_book' },
+  { label: 'Luyện Nói', icon: 'mic' },
+]
+
+// --- State ---
+const isMobileMenuOpen = ref(false)
+const isDesktopSidebarOpen = ref(true)
+const isDesktop = ref(true)
+const activeColorClass = ref('')
+
+// --- German Flag Colors Palette ---
+const germanColors = [
+  'bg-gray-900 text-white dark:bg-white dark:text-black shadow-md',
+  'bg-[#DD0000] text-white shadow-md shadow-red-500/20',
+  'bg-[#FFCE00] text-black shadow-md shadow-yellow-500/20'
+]
+
+// --- Computed ---
 const userInitials = computed(() => {
-  const name = authStore.user?.fullName || 'U'
-  return name
-    .split(' ')
-    .map(n => n[0])
-    .join('')
-    .toUpperCase()
-    .slice(0, 2)
+  return (authStore.user?.fullName || 'U').substring(0, 2).toUpperCase()
 })
 
-const roleLabel = computed(() => {
-  const role = authStore.user?.role || 'learner'
-  const labels = {
-    admin: 'Quản trị viên',
-    teacher: 'Giáo viên',
-    learner: 'Học viên'
-  }
-  return labels[role as keyof typeof labels] || 'Học viên'
+// Logic hiển thị sidebar: Mobile (theo biến toggle) OR Desktop (theo biến toggle desktop)
+const shouldShowSidebar = computed(() => {
+  if (isDesktop.value) return isDesktopSidebarOpen.value
+  return isMobileMenuOpen.value
 })
+
+// --- Methods ---
 
 function isActive(path: string) {
-  return route.path === path
+  return route.path === path || route.path.startsWith(path + '/')
+}
+
+// Hàm tạo màu ngẫu nhiên mỗi khi chuyển trang
+function randomizeColor() {
+  const randomIndex = Math.floor(Math.random() * germanColors.length)
+  activeColorClass.value = germanColors[randomIndex] || ''
+}
+
+// Hàm lấy class cho từng link
+function getLinkClass(path: string) {
+  if (isActive(path)) {
+    return activeColorClass.value
+  }
+  // Style mặc định khi không active
+  return 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'
+}
+
+function toggleMobileMenu() {
+  isMobileMenuOpen.value = !isMobileMenuOpen.value
+}
+
+function closeMobileMenu() {
+  isMobileMenuOpen.value = false
+}
+
+function toggleDesktopSidebar() {
+  isDesktopSidebarOpen.value = !isDesktopSidebarOpen.value
+}
+
+// Nút X (hoặc icon đóng sidebar) sẽ hành xử khác nhau tùy thiết bị
+function handleCloseSidebar() {
+  if (isDesktop.value) {
+    toggleDesktopSidebar() // Trên desktop thì ẩn đi (có thể mở lại bằng nút dock)
+  } else {
+    closeMobileMenu() // Trên mobile thì đóng overlay
+  }
+}
+
+function handleNavClick() {
+  if (!isDesktop.value) closeMobileMenu()
 }
 
 function handleLogout() {
   authStore.logout()
   router.push('/login')
 }
+
+function handleResize() {
+  isDesktop.value = window.innerWidth >= 1024
+  // Nếu chuyển từ desktop về mobile, đảm bảo menu đóng để không bị che màn hình
+  if (!isDesktop.value) {
+    isMobileMenuOpen.value = false
+  } else {
+    // Nếu về lại desktop, khôi phục trạng thái mở (hoặc giữ nguyên ý muốn người dùng)
+    if (isDesktopSidebarOpen.value === false) isDesktopSidebarOpen.value = true 
+  }
+}
+
+// --- Watchers & Hooks ---
+
+// Theo dõi sự thay đổi route để đổi màu cờ Đức
+watch(
+  () => route.path,
+  () => {
+    randomizeColor()
+  },
+  { immediate: true } // Chạy ngay lần đầu load
+)
+
+onMounted(() => {
+  handleResize()
+  window.addEventListener('resize', handleResize)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
+})
 </script>
+
+<style scoped>
+/* Animation trượt mượt mà */
+.slide-enter-active,
+.slide-leave-active {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slide-enter-from,
+.slide-leave-to {
+  transform: translateX(-100%);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+/* Fill icon styles */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+.material-symbols-outlined.fill-current {
+  font-variation-settings: 'FILL' 1;
+}
+</style>

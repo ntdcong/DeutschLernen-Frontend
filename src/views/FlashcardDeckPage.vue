@@ -2,7 +2,7 @@
   <div class="relative flex min-h-screen w-full bg-background-light dark:bg-background-dark">
     <Sidebar />
 
-    <main class="flex-1 p-4 text-text-primary-light sm:p-6 lg:p-8 dark:text-text-primary-dark">
+    <main class="flex-1 p-4 pt-16 text-text-primary-light sm:p-6 lg:p-8 lg:pt-8 dark:text-text-primary-dark">
       <div class="mx-auto max-w-6xl">
         <!-- Header -->
         <div class="mb-8">
@@ -175,7 +175,7 @@
                 <input
                   v-model="newDeckName"
                   required
-                  class="rounded-lg border border-gray-300 px-4 py-2 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/50 dark:border-gray-700 dark:bg-gray-800"
+                  class="rounded-lg border border-gray-300 px-4 py-2 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/50 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
                   placeholder="VD: Từ vựng A1"
                   type="text"
                 />
@@ -184,16 +184,55 @@
                 <button
                   type="button"
                   @click="showCreateModal = false"
-                  class="rounded-lg border border-gray-300 px-4 py-2 font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+                  class="rounded-lg px-4 py-2 font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
                   :disabled="deckStore.loading"
-                  class="rounded-lg bg-primary px-4 py-2 font-semibold text-white hover:bg-primary/90 disabled:opacity-50"
+                  class="rounded-lg bg-primary px-4 py-2 font-semibold text-black hover:bg-primary/90 disabled:opacity-50"
                 >
                   {{ deckStore.loading ? 'Đang tạo...' : 'Tạo' }}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Edit Deck Modal -->
+        <div
+          v-if="showEditModal"
+          class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+          @click.self="showEditModal = false"
+        >
+          <div class="w-full max-w-md rounded-xl bg-white p-6 shadow-2xl dark:bg-gray-900">
+            <h2 class="mb-4 text-2xl font-bold text-gray-900 dark:text-white">Chỉnh sửa bộ từ vựng</h2>
+            <form @submit.prevent="handleUpdateDeck">
+              <label class="flex flex-col">
+                <span class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Tên bộ từ vựng</span>
+                <input
+                  v-model="editDeckName"
+                  required
+                  class="rounded-lg border border-gray-300 px-4 py-2 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/50 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                  placeholder="VD: Từ vựng A1"
+                  type="text"
+                />
+              </label>
+              <div class="mt-6 flex justify-end gap-3">
+                <button
+                  type="button"
+                  @click="showEditModal = false"
+                  class="rounded-lg px-4 py-2 font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
+                >
+                  Hủy
+                </button>
+                <button
+                  type="submit"
+                  :disabled="deckStore.loading"
+                  class="rounded-lg border border-gray-300 bg-yellow-500 px-4 py-2 font-semibold text-black hover:bg-primary/90 disabled:opacity-50"
+                >
+                  {{ deckStore.loading ? 'Đang lưu...' : 'Lưu thay đổi' }}
                 </button>
               </div>
             </form>
@@ -217,7 +256,10 @@ const deckStore = useDeckStore()
 const searchQuery = ref('')
 const sortBy = ref('newest')
 const showCreateModal = ref(false)
+const showEditModal = ref(false)
 const newDeckName = ref('')
+const editDeckName = ref('')
+const editingDeck = ref<Deck | null>(null)
 
 const userDecks = computed(() => {
   let decks = deckStore.decks.filter(deck => deck.userId === authStore.user?.id && !deck.isPublic)
@@ -260,8 +302,22 @@ async function handleCreateDeck() {
 }
 
 function editDeck(deck: Deck) {
-  // TODO: Implement edit functionality
-  console.log('Edit deck:', deck)
+  editingDeck.value = deck
+  editDeckName.value = deck.name
+  showEditModal.value = true
+}
+
+async function handleUpdateDeck() {
+  if (!editingDeck.value) return
+  
+  try {
+    await deckStore.updateDeck(editingDeck.value.id, { name: editDeckName.value })
+    showEditModal.value = false
+    editingDeck.value = null
+    editDeckName.value = ''
+  } catch (error) {
+    console.error('Failed to update deck:', error)
+  }
 }
 
 function confirmDelete(deck: Deck) {
@@ -273,8 +329,6 @@ function confirmDelete(deck: Deck) {
 onMounted(async () => {
   try {
     await deckStore.fetchDecks()
-    // Fetch word counts for decks that don't have them
-    await deckStore.fetchWordCounts()
   } catch (error) {
     console.error('Failed to load decks:', error)
   }
