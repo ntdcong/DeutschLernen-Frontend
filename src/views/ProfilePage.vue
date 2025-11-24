@@ -7,8 +7,7 @@
         <!-- Header -->
         <div class="mb-8">
           <h1
-            class="text-3xl font-black leading-tight tracking-[-0.033em] text-primary-black md:text-4xl dark:text-white"
-          >
+            class="text-3xl font-black leading-tight tracking-[-0.033em] text-primary-black md:text-4xl dark:text-white">
             Hồ Sơ Cá Nhân
           </h1>
           <p class="mt-2 text-base font-normal leading-normal text-text-secondary-light dark:text-text-secondary-dark">
@@ -19,27 +18,34 @@
         <!-- Loading State -->
         <div v-if="loading" class="flex items-center justify-center py-20">
           <div class="text-center">
-            <div class="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent"></div>
+            <div
+              class="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent">
+            </div>
             <p class="mt-4 text-text-secondary-light dark:text-text-secondary-dark">Đang tải thông tin...</p>
           </div>
         </div>
 
         <!-- Error State -->
-        <div v-else-if="error" class="rounded-xl border border-red-200 bg-red-50 p-6 dark:border-red-900 dark:bg-red-950">
+        <div v-else-if="error"
+          class="rounded-xl border border-red-200 bg-red-50 p-6 dark:border-red-900 dark:bg-red-950">
           <p class="text-red-600 dark:text-red-400">{{ error }}</p>
         </div>
 
         <!-- Profile Content -->
         <div v-else-if="userProfile" class="space-y-6">
           <!-- Profile Header Card -->
-          <div class="relative overflow-hidden rounded-2xl border border-border-light bg-gradient-to-br from-black via-red-600 to-yellow-600 p-8 dark:border-border-dark">
+          <div
+            class="relative overflow-hidden rounded-2xl border border-border-light bg-gradient-to-br from-black via-red-600 to-yellow-600 p-8 dark:border-border-dark">
             <div class="relative z-10 flex flex-col items-center gap-6 sm:flex-row">
               <!-- Avatar -->
               <div class="relative">
-                <div class="flex h-32 w-32 items-center justify-center rounded-full bg-blue-500 text-5xl font-bold text-white shadow-2xl ring-4 ring-white dark:ring-gray-800">
+                <div
+                  class="flex h-32 w-32 items-center justify-center rounded-full bg-blue-500 text-5xl font-bold text-white shadow-2xl ring-4 ring-white dark:ring-gray-800">
                   {{ getInitials(userProfile.fullName) }}
                 </div>
-                <div class="absolute bottom-2 right-2 h-6 w-6 rounded-full border-4 border-white bg-green-500 dark:border-gray-800" :class="userProfile.isActive ? 'bg-green-500' : 'bg-gray-400'"></div>
+                <div
+                  class="absolute bottom-2 right-2 h-6 w-6 rounded-full border-4 border-white bg-green-500 dark:border-gray-800"
+                  :class="userProfile.isActive ? 'bg-green-500' : 'bg-gray-400'"></div>
               </div>
 
               <!-- User Info -->
@@ -51,15 +57,20 @@
                   {{ userProfile.email }}
                 </p>
                 <div class="mt-4 flex flex-wrap items-center justify-center gap-3 sm:justify-start">
-                  <span class="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm dark:bg-gray-800 dark:text-gray-300">
+                  <span
+                    class="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm dark:bg-gray-800 dark:text-gray-300">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                      </path>
                     </svg>
                     Tham gia: {{ formatDate(userProfile.createdAt) }}
                   </span>
-                  <span class="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-yellow-600 shadow-sm dark:bg-gray-800 dark:text-blue-400">
+                  <span
+                    class="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-yellow-600 shadow-sm dark:bg-gray-800 dark:text-blue-400">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                     Đã tham gia được {{ totalDays }} ngày
                   </span>
@@ -74,9 +85,10 @@
           <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <!-- Calendar -->
             <div>
-              <div class="rounded-xl border border-border-light bg-surface-light p-6 dark:border-border-dark dark:bg-surface-dark">
+              <div
+                class="rounded-xl border border-border-light bg-surface-light p-6 dark:border-border-dark dark:bg-surface-dark">
                 <h3 class="mb-4 text-xl font-bold text-primary-black dark:text-white">Lịch</h3>
-                
+
                 <!-- Month Navigation -->
                 <div class="mb-4 flex items-center justify-between">
                   <button @click="previousMonth" class="rounded-lg p-2 hover:bg-gray-100 dark:hover:bg-gray-800">
@@ -97,21 +109,16 @@
                 <!-- Calendar Grid -->
                 <div class="grid grid-cols-7 gap-1">
                   <!-- Day Headers -->
-                  <div v-for="day in ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7']" :key="day" class="text-center text-xs font-semibold text-text-secondary-light dark:text-text-secondary-dark py-2">
+                  <div v-for="day in ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7']" :key="day"
+                    class="text-center text-xs font-semibold text-text-secondary-light dark:text-text-secondary-dark py-2">
                     {{ day }}
                   </div>
-                  
+
                   <!-- Calendar Days -->
-                  <div
-                    v-for="(day, index) in calendarDays"
-                    :key="index"
-                    class="aspect-square flex items-center justify-center text-sm"
-                  >
-                    <div 
-                      v-if="day.date" 
-                      class="flex h-8 w-8 items-center justify-center rounded-full transition-colors"
-                      :class="day.isToday ? 'bg-black text-white font-bold dark:bg-white dark:text-black' : 'hover:bg-gray-100 dark:hover:bg-gray-800'"
-                    >
+                  <div v-for="(day, index) in calendarDays" :key="index"
+                    class="aspect-square flex items-center justify-center text-sm">
+                    <div v-if="day.date" class="flex h-8 w-8 items-center justify-center rounded-full transition-colors"
+                      :class="day.isToday ? 'bg-black text-white font-bold dark:bg-white dark:text-black' : 'hover:bg-gray-100 dark:hover:bg-gray-800'">
                       {{ day.date }}
                     </div>
                   </div>
@@ -121,25 +128,32 @@
 
             <!-- Account Information -->
             <div>
-              <div class="rounded-xl border border-border-light bg-surface-light p-6 dark:border-border-dark dark:bg-surface-dark">
+              <div
+                class="rounded-xl border border-border-light bg-surface-light p-6 dark:border-border-dark dark:bg-surface-dark">
                 <h3 class="mb-6 text-xl font-bold text-primary-black dark:text-white">Thông Tin Tài Khoản</h3>
-            
-                <div class="space-y-4">               
+
+                <div class="space-y-4">
                   <div>
-                    <label class="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark">Họ và tên</label>
-                    <p class="mt-1 rounded-lg border border-border-light bg-background-light px-4 py-2 text-sm text-primary-black dark:border-border-dark dark:bg-background-dark dark:text-white">
+                    <label class="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark">Họ và
+                      tên</label>
+                    <p
+                      class="mt-1 rounded-lg border border-border-light bg-background-light px-4 py-2 text-sm text-primary-black dark:border-border-dark dark:bg-background-dark dark:text-white">
                       {{ userProfile.fullName }}
                     </p>
                   </div>
                   <div>
-                    <label class="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark">Email</label>
-                    <p class="mt-1 rounded-lg border border-border-light bg-background-light px-4 py-2 text-sm text-primary-black dark:border-border-dark dark:bg-background-dark dark:text-white">
+                    <label
+                      class="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark">Email</label>
+                    <p
+                      class="mt-1 rounded-lg border border-border-light bg-background-light px-4 py-2 text-sm text-primary-black dark:border-border-dark dark:bg-background-dark dark:text-white">
                       {{ userProfile.email }}
                     </p>
                   </div>
                   <div>
-                    <label class="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark">Ngày tạo tài khoản</label>
-                    <p class="mt-1 rounded-lg border border-border-light bg-background-light px-4 py-2 text-sm text-primary-black dark:border-border-dark dark:bg-background-dark dark:text-white">
+                    <label class="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark">Ngày tạo
+                      tài khoản</label>
+                    <p
+                      class="mt-1 rounded-lg border border-border-light bg-background-light px-4 py-2 text-sm text-primary-black dark:border-border-dark dark:bg-background-dark dark:text-white">
                       {{ formatDateTime(userProfile.createdAt) }}
                     </p>
                   </div>
@@ -287,9 +301,9 @@ function formatDateTime(dateString: string): string {
   if (!dateString) return 'Không có thông tin'
   const date = new Date(dateString)
   if (isNaN(date.getTime())) return 'Không có thông tin'
-  return date.toLocaleString('vi-VN', { 
-    year: 'numeric', 
-    month: 'long', 
+  return date.toLocaleString('vi-VN', {
+    year: 'numeric',
+    month: 'long',
     day: 'numeric',
     hour: '2-digit',
     minute: '2-digit'
@@ -298,7 +312,7 @@ function formatDateTime(dateString: string): string {
 
 function getDayClass(day: any) {
   if (!day.date) return ''
-  
+
   if (day.activityLevel >= 5) {
     return 'bg-green-500 text-white font-semibold hover:bg-green-600 cursor-pointer'
   } else if (day.activityLevel > 0) {
@@ -330,7 +344,7 @@ async function fetchUserProfile() {
   try {
     loading.value = true
     error.value = null
-    
+
     // Try to get user profile by ID from auth store
     if (authStore.user?.id) {
       const response = await userService.getUserById(authStore.user.id)
@@ -340,7 +354,7 @@ async function fetchUserProfile() {
     }
   } catch (err: any) {
     console.error('Failed to fetch user profile:', err)
-    
+
     // Fallback to auth store user data
     if (authStore.user) {
       userProfile.value = {

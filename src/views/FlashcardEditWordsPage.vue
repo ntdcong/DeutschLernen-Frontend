@@ -6,14 +6,13 @@
       <div class="mx-auto max-w-6xl">
         <!-- Header -->
         <div class="mb-8 flex items-center gap-4">
-          <router-link
-            :to="`/decks`"
-            class="flex items-center justify-center rounded-full p-2 text-text-secondary-light transition-colors hover:bg-black/5 dark:text-text-secondary-dark dark:hover:bg-white/5"
-          >
+          <router-link :to="`/decks`"
+            class="flex items-center justify-center rounded-full p-2 text-text-secondary-light transition-colors hover:bg-black/5 dark:text-text-secondary-dark dark:hover:bg-white/5">
             <span class="material-symbols-outlined">arrow_back</span>
           </router-link>
           <div>
-            <h1 class="text-2xl font-black leading-tight tracking-[-0.033em] text-primary-black md:text-3xl dark:text-white">
+            <h1
+              class="text-2xl font-black leading-tight tracking-[-0.033em] text-primary-black md:text-3xl dark:text-white">
               Chỉnh sửa từ vựng
             </h1>
             <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">
@@ -31,10 +30,12 @@
             <!-- Search/Filter could go here -->
           </div>
 
-          <div class="flex-1 overflow-hidden rounded-xl border border-border-light bg-surface-light dark:border-border-dark dark:bg-surface-dark flex flex-col">
+          <div
+            class="flex-1 overflow-hidden rounded-xl border border-border-light bg-surface-light dark:border-border-dark dark:bg-surface-dark flex flex-col">
             <div class="overflow-y-auto flex-1 p-0">
               <table class="w-full text-left text-sm">
-                <thead class="sticky top-0 bg-gray-50 text-xs uppercase text-text-secondary-light dark:bg-gray-800 dark:text-text-secondary-dark z-10">
+                <thead
+                  class="sticky top-0 bg-gray-50 text-xs uppercase text-text-secondary-light dark:bg-gray-800 dark:text-text-secondary-dark z-10">
                   <tr>
                     <th class="px-6 py-3">Từ vựng</th>
                     <th class="px-6 py-3">Nghĩa</th>
@@ -45,40 +46,34 @@
                 </thead>
                 <tbody class="divide-y divide-border-light dark:divide-border-dark">
                   <tr v-if="isLoading">
-                    <td colspan="5" class="px-6 py-8 text-center text-text-secondary-light dark:text-text-secondary-dark">
+                    <td colspan="5"
+                      class="px-6 py-8 text-center text-text-secondary-light dark:text-text-secondary-dark">
                       <span class="material-symbols-outlined animate-spin text-2xl">refresh</span>
                       <p class="mt-2">Đang tải danh sách...</p>
                     </td>
                   </tr>
                   <tr v-else-if="words.length === 0">
-                    <td colspan="5" class="px-6 py-8 text-center text-text-secondary-light dark:text-text-secondary-dark">
+                    <td colspan="5"
+                      class="px-6 py-8 text-center text-text-secondary-light dark:text-text-secondary-dark">
                       Chưa có từ vựng nào trong bộ thẻ này.
                     </td>
                   </tr>
-                  <tr v-for="word in paginatedWords" :key="word.id" class="group hover:bg-gray-50 dark:hover:bg-white/5">
+                  <tr v-for="word in paginatedWords" :key="word.id"
+                    class="group hover:bg-gray-50 dark:hover:bg-white/5">
                     <td class="px-6 py-4">
-                      <input
-                        v-model="word.word"
-                        @change="markModified(word.id)"
+                      <input v-model="word.word" @change="markModified(word.id)"
                         class="w-full bg-transparent focus:outline-none focus:ring-1 focus:ring-primary rounded px-1 transition-colors"
-                        :class="{'text-primary font-medium': isModified(word.id)}"
-                      />
+                        :class="{ 'text-primary font-medium': isModified(word.id) }" />
                     </td>
                     <td class="px-6 py-4">
-                      <input
-                        v-model="word.meaning"
-                        @change="markModified(word.id)"
+                      <input v-model="word.meaning" @change="markModified(word.id)"
                         class="w-full bg-transparent focus:outline-none focus:ring-1 focus:ring-primary rounded px-1 transition-colors"
-                        :class="{'text-primary font-medium': isModified(word.id)}"
-                      />
+                        :class="{ 'text-primary font-medium': isModified(word.id) }" />
                     </td>
                     <td class="px-6 py-4">
-                      <select
-                        v-model="word.genus"
-                        @change="markModified(word.id)"
+                      <select v-model="word.genus" @change="markModified(word.id)"
                         class="bg-transparent focus:outline-none focus:ring-1 focus:ring-primary rounded px-1 transition-colors"
-                        :class="{'text-primary font-medium': isModified(word.id)}"
-                      >
+                        :class="{ 'text-primary font-medium': isModified(word.id) }">
                         <option value="">-</option>
                         <option value="der">der</option>
                         <option value="die">die</option>
@@ -86,29 +81,19 @@
                       </select>
                     </td>
                     <td class="px-6 py-4">
-                      <input
-                        v-model="word.plural"
-                        @change="markModified(word.id)"
+                      <input v-model="word.plural" @change="markModified(word.id)"
                         class="w-full bg-transparent focus:outline-none focus:ring-1 focus:ring-primary rounded px-1 transition-colors"
-                        :class="{'text-primary font-medium': isModified(word.id)}"
-                        placeholder="-"
-                      />
+                        :class="{ 'text-primary font-medium': isModified(word.id) }" placeholder="-" />
                     </td>
                     <td class="px-6 py-4 text-right whitespace-nowrap">
                       <div class="flex items-center justify-end gap-2">
-                        <button
-                          v-if="isModified(word.id)"
-                          @click="saveWord(word)"
-                          class="text-primary hover:text-primary/80 transition-colors"
-                          title="Lưu thay đổi"
-                        >
+                        <button v-if="isModified(word.id)" @click="saveWord(word)"
+                          class="text-primary hover:text-primary/80 transition-colors" title="Lưu thay đổi">
                           <span class="material-symbols-outlined">save</span>
                         </button>
-                        <button
-                          @click="deleteWord(word)"
+                        <button @click="deleteWord(word)"
                           class="text-text-secondary-light hover:text-red-500 dark:text-text-secondary-dark dark:hover:text-red-400 transition-colors"
-                          title="Xóa từ"
-                        >
+                          title="Xóa từ">
                           <span class="material-symbols-outlined">delete</span>
                         </button>
                       </div>
@@ -117,24 +102,19 @@
                 </tbody>
               </table>
             </div>
-            
+
             <!-- Pagination -->
-            <div v-if="totalPages > 1" class="border-t border-border-light p-4 dark:border-border-dark flex justify-center gap-2">
-              <button
-                @click="currentPage--"
-                :disabled="currentPage === 1"
-                class="rounded p-1 hover:bg-gray-100 disabled:opacity-50 dark:hover:bg-gray-800"
-              >
+            <div v-if="totalPages > 1"
+              class="border-t border-border-light p-4 dark:border-border-dark flex justify-center gap-2">
+              <button @click="currentPage--" :disabled="currentPage === 1"
+                class="rounded p-1 hover:bg-gray-100 disabled:opacity-50 dark:hover:bg-gray-800">
                 <span class="material-symbols-outlined">chevron_left</span>
               </button>
               <span class="flex items-center px-2 text-sm">
                 Trang {{ currentPage }} / {{ totalPages }}
               </span>
-              <button
-                @click="currentPage++"
-                :disabled="currentPage === totalPages"
-                class="rounded p-1 hover:bg-gray-100 disabled:opacity-50 dark:hover:bg-gray-800"
-              >
+              <button @click="currentPage++" :disabled="currentPage === totalPages"
+                class="rounded p-1 hover:bg-gray-100 disabled:opacity-50 dark:hover:bg-gray-800">
                 <span class="material-symbols-outlined">chevron_right</span>
               </button>
             </div>
@@ -228,7 +208,7 @@ async function saveWord(word: Word) {
 
 async function deleteWord(word: Word) {
   if (!confirm(`Bạn có chắc muốn xóa từ "${word.word}"?`)) return
-  
+
   try {
     await wordService.deleteWord(word.id)
     words.value = words.value.filter(w => w.id !== word.id)
