@@ -60,6 +60,12 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
+      path: '/favorites',
+      name: 'Favorites',
+      component: () => import('@/views/FavoriteSentencesPage.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
       path: '/profile',
       name: 'Profile',
       component: ProfilePage,

@@ -11,9 +11,6 @@
               class="text-3xl font-black leading-tight tracking-[-0.033em] text-primary-black md:text-4xl dark:text-white">
               Học Từ Vựng
             </h1>
-            <p class="mt-2 text-text-secondary-light dark:text-text-secondary-dark">
-              Quản lý và học các bộ từ vựng của bạn
-            </p>
           </div>
           <button @click="showCreateModal = true"
             class="group flex items-center justify-center gap-2 rounded-xl bg-red-500 px-6 py-3 font-bold text-white shadow-lg shadow-primary/30 transition-all hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-primary/40">
@@ -33,6 +30,10 @@
             <input v-model="searchQuery"
               class="w-full rounded-xl bg-background-light py-3 pl-12 pr-4 font-medium placeholder-text-secondary-light focus:ring-2 focus:ring-primary/50 dark:bg-background-dark dark:placeholder-text-secondary-dark"
               placeholder="Tìm kiếm bộ từ vựng..." type="text" />
+            <button v-if="searchQuery" @click="searchQuery = ''"
+              class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+              <span class="material-symbols-outlined text-sm">close</span>
+            </button>
           </div>
 
           <div class="flex items-center gap-4">

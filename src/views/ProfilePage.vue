@@ -10,9 +10,6 @@
             class="text-3xl font-black leading-tight tracking-[-0.033em] text-primary-black md:text-4xl dark:text-white">
             Hồ Sơ Cá Nhân
           </h1>
-          <p class="mt-2 text-base font-normal leading-normal text-text-secondary-light dark:text-text-secondary-dark">
-            Quản lý thông tin và theo dõi tiến trình học tập của bạn
-          </p>
         </div>
 
         <!-- Loading State -->

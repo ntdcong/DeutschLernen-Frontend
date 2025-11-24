@@ -32,11 +32,17 @@
         </div>
       </div>
 
-      <div class="flex items-center gap-4 text-text-light dark:text-text-dark">
+      <div class="flex items-center gap-2 text-text-light dark:text-text-dark">
+        <button @click="showAIAssistant" :disabled="!currentWord"
+          class="flex items-center justify-center gap-1 rounded-full bg-black px-3 py-2 text-sm font-semibold text-white transition-all hover:scale-105 disabled:opacity-30 disabled:hover:scale-100"
+          title="AI Trợ lý học tập">
+          <span class="material-symbols-outlined">auto_awesome</span>
+          <span class="hidden sm:inline">AI</span>
+        </button>
         <button @click="showHelpModal = true"
-          class="flex items-center justify-center rounded-full p-2 transition-colors hover:bg-black/5 dark:hover:bg-white/5"
+          class="flex items-center justify-center border border-solid border-black rounded-full p-2 transition-colors hover:bg-black hover:text-white dark:hover:bg-white/5"
           title="Hướng dẫn sử dụng">
-          <span class="material-symbols-outlined text-xl">lightbulb</span>
+          <span class="material-symbols-outlined text-xl">question_mark</span>
         </button>
       </div>
     </header>
@@ -86,7 +92,7 @@
                   <div class="flashcard-inner h-full w-full duration-500">
                     <!-- Front Side -->
                     <div
-                      class="flashcard-front absolute inset-0 flex flex-col items-center justify-center rounded-xl border border-black/10 bg-white p-6 shadow-lg backface-hidden dark:border-white/10 dark:bg-text-dark/10 overflow-hidden select-none">
+                      class="flashcard-front absolute inset-0 flex flex-col items-center justify-center rounded-xl border border-black bg-white p-6 shadow-lg backface-hidden dark:border-white/10 dark:bg-text-dark/10 overflow-hidden select-none">
                       <div class="flex flex-col items-center justify-center w-full h-full gap-4 px-4">
                         <h1 class="text-center font-semibold w-full wrap-text"
                           :style="getFrontTextStyle(currentWord.word)">
@@ -97,7 +103,7 @@
 
                     <!-- Back Side -->
                     <div
-                      class="flashcard-back absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-xl border border-black/10 p-6 text-center shadow-lg backface-hidden rotate-y-180 overflow-hidden select-none"
+                      class="flashcard-back absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-xl border border-black p-6 text-center shadow-lg backface-hidden rotate-y-180 overflow-hidden select-none"
                       :class="getBackCardColorClass(currentWord.genus)">
                       <div class="flex flex-col items-center justify-center w-full flex-1 gap-2 overflow-y-auto px-4">
                         <p class="text-center font-semibold w-full wrap-text"
@@ -147,14 +153,14 @@
           </div>
 
           <!-- Action Buttons -->
-          <div class="flex w-full max-w-xl flex-wrap justify-center gap-4">
+          <div class="flex w-full max-w-xl hover:gap-4 flex-wrap justify-center gap-4">
             <button @click="markAsNotLearned"
-              class="flex min-w-[140px] flex-1 items-center justify-center gap-2 rounded-lg border border-red-500 bg-accent-red/10 px-5 py-3.5 text-base font-bold leading-normal tracking-[0.015em] text-red-600 transition hover:bg-accent-red hover:text-white dark:text-red-400 dark:hover:text-white">
+              class="flex min-w-[140px] flex-1 items-center justify-center gap-2 rounded-lg border border-red-500 bg-accent-red/10 px-5 py-3.5 text-base font-bold leading-normal tracking-[0.015em] text-red-600 transition hover:bg-accent-red dark:text-red-400 dark:hover:text-white">
               <span class="material-symbols-outlined">close</span>
               <span class="truncate">Chưa thuộc</span>
             </button>
             <button @click="markAsLearned"
-              class="flex min-w-[140px] flex-1 items-center justify-center gap-2 rounded-lg border border-green-500 bg-accent-green/10 px-5 py-3.5 text-base font-bold leading-normal tracking-[0.015em] text-green-600 transition hover:bg-accent-green hover:text-white dark:text-green-400 dark:hover:text-white">
+              class="flex min-w-[140px] flex-1 items-center justify-center gap-2 rounded-lg border border-green-500 bg-accent-green/10 px-5 py-3.5 text-base font-bold leading-normal tracking-[0.015em] text-green-600 transition hover:bg-accent-green dark:text-green-400 dark:hover:text-white">
               <span class="material-symbols-outlined">check</span>
               <span class="truncate">Đã thuộc</span>
             </button>
@@ -203,13 +209,17 @@
       </div>
     </div>
 
+    <!-- AI Assistant Modal -->
+    <AIAssistantModal :is-open="showAIModal" :word-id="currentWord?.id || ''" :word="currentWord?.word || ''"
+      @close="showAIModal = false" @saved="handleAISaved" />
+
     <!-- Help Modal -->
     <div v-if="showHelpModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
       @click.self="showHelpModal = false">
       <div class="w-full max-w-md rounded-xl bg-white p-6 shadow-2xl dark:bg-gray-900">
         <div class="mb-6 flex items-center justify-between">
           <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-3xl text-yellow-500">lightbulb</span>
+            <span class="material-symbols-outlined text-3xl text-black">lightbulb</span>
             <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Hướng dẫn</h2>
           </div>
           <button @click="showHelpModal = false"
@@ -282,6 +292,7 @@ import { useLearnStore } from '@/stores/learn'
 import deckService from '@/services/deck.service'
 import wordService from '@/services/word.service'
 import type { Word } from '@/services/word.service'
+import AIAssistantModal from '@/components/AIAssistantModal.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -299,6 +310,7 @@ const transitionName = ref('slide-next')
 const isNavigating = ref(false)
 const showCompletionModal = ref(false)
 const showHelpModal = ref(false)
+const showAIModal = ref(false)
 
 // Swipe handling
 const touchStartX = ref(0)
@@ -343,14 +355,14 @@ function getFrontTextStyle(text: string): string {
   let fontSize: string
 
   // Aggressive font sizing to fit everything on one line
-  if (length <= 8) {
-    fontSize = 'clamp(3rem, 10vw, 6rem)' // Very large for short words
-  } else if (length <= 12) {
-    fontSize = 'clamp(2.5rem, 8vw, 4.5rem)' // Large
-  } else if (length <= 16) {
-    fontSize = 'clamp(2rem, 6vw, 3.5rem)' // Medium-large
+  if (length <= 6) {
+    fontSize = 'clamp(3rem, 10vw, 6rem)' // Very large for short words (1-6 chars)
+  } else if (length <= 10) {
+    fontSize = 'clamp(2.5rem, 8vw, 4.5rem)' // Large (7-10 chars) - Fixed for 'ankommen'
+  } else if (length <= 14) {
+    fontSize = 'clamp(2rem, 6vw, 3.5rem)' // Medium-large (11-14 chars)
   } else if (length <= 20) {
-    fontSize = 'clamp(1.5rem, 5vw, 2.5rem)' // Medium
+    fontSize = 'clamp(1.5rem, 5vw, 2.5rem)' // Medium (15-20 chars)
   } else if (length <= 25) {
     fontSize = 'clamp(1.25rem, 4vw, 2rem)' // Small
   } else if (length <= 30) {
@@ -573,6 +585,17 @@ function playAudio() {
       console.error('Failed to play audio:', err)
     })
   }
+}
+
+function showAIAssistant() {
+  if (currentWord.value) {
+    showAIModal.value = true
+  }
+}
+
+function handleAISaved() {
+  // Could show a success message or update UI
+  console.log('Sentence saved to favorites')
 }
 
 // Data Loading Functions
