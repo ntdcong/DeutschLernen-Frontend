@@ -244,28 +244,84 @@
         <div v-if="showEditModal"
           class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
           @click.self="showEditModal = false">
-          <div class="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl dark:bg-gray-900">
-            <h2 class="mb-6 text-2xl font-bold text-gray-900 dark:text-white">Đổi tên bộ từ vựng</h2>
-            <form @submit.prevent="handleUpdateDeck">
+          <div
+            class="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl dark:bg-gray-900 max-h-[90vh] overflow-y-auto">
+            <h2 class="mb-6 text-2xl font-bold text-gray-900 dark:text-white">Cài đặt bộ từ vựng</h2>
+
+            <form @submit.prevent="handleUpdateDeck" class="mb-8">
               <label class="flex flex-col">
-                <span class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Tên mới</span>
-                <input v-model="editDeckName" required
-                  class="rounded-xl border border-gray-300 px-4 py-3 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/50 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
-                  type="text" />
+                <span class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Tên bộ từ vựng</span>
+                <div class="flex gap-2">
+                  <input v-model="editDeckName" required
+                    class="flex-1 rounded-xl border border-gray-300 px-4 py-3 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/50 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                    type="text" />
+                  <button type="submit" :disabled="deckStore.loading"
+                    class="rounded-xl bg-black px-4 py-2 font-bold text-white hover:bg-primary/90 disabled:opacity-50 whitespace-nowrap">
+                    {{ deckStore.loading ? '...' : 'Lưu' }}
+                  </button>
+                </div>
               </label>
-              <div class="mt-8 flex justify-end gap-3">
-                <button type="button" @click="showEditModal = false"
-                  class="rounded-xl px-5 py-2.5 font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800">
-                  Hủy
-                </button>
-                <button type="submit" :disabled="deckStore.loading"
-                  class="rounded-xl bg-black px-5 py-2.5 font-bold text-white hover:bg-primary/90 disabled:opacity-50">
-                  {{ deckStore.loading ? 'Đang lưu...' : 'Lưu thay đổi' }}
-                </button>
-              </div>
             </form>
+
+            <div class="border-t border-gray-200 pt-6 dark:border-gray-700">
+              <div class="mb-4 flex items-center justify-between">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white">Chia sẻ công khai</h3>
+                <label class="relative inline-flex cursor-pointer items-center">
+                  <input type="checkbox" :checked="!!shareInfo" @change="toggleSharing" :disabled="loadingShare"
+                    class="peer sr-only">
+                  <div
+                    class="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/30 dark:border-gray-600 dark:bg-gray-700">
+                  </div>
+                </label>
+              </div>
+
+              <div v-if="loadingShare" class="flex justify-center py-4">
+                <div class="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
+              </div>
+
+              <div v-else-if="shareInfo" class="space-y-4 rounded-xl bg-gray-50 p-4 dark:bg-gray-800">
+                <div>
+                  <label class="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Liên kết công
+                    khai</label>
+                  <div class="flex gap-2">
+                    <input type="text" :value="shareInfo.publicShareUrl" readonly
+                      class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-600 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300" />
+                    <button @click="copyLink"
+                      class="rounded-lg bg-white p-2 text-gray-600 shadow-sm hover:text-primary dark:bg-gray-700 dark:text-gray-300 dark:hover:text-primary">
+                      <span class="material-symbols-outlined text-xl">content_copy</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="flex gap-2">
+                  <button @click="showQRModal = true"
+                    class="flex flex-1 items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600">
+                    <span class="material-symbols-outlined text-lg">qr_code</span>
+                    QR Code
+                  </button>
+                  <button @click="regenerateToken"
+                    class="flex flex-1 items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white py-2 text-sm font-medium text-red-600 hover:bg-red-50 dark:border-gray-600 dark:bg-gray-700 dark:text-red-400 dark:hover:bg-red-900/20">
+                    <span class="material-symbols-outlined text-lg">refresh</span>
+                    Tạo lại
+                  </button>
+                </div>
+              </div>
+              <p v-else class="text-sm text-gray-500 dark:text-gray-400">
+                Bật tính năng này để chia sẻ bộ từ vựng với bất kỳ ai thông qua liên kết hoặc mã QR.
+              </p>
+            </div>
+
+            <div class="mt-8 flex justify-end">
+              <button type="button" @click="showEditModal = false"
+                class="rounded-xl px-5 py-2.5 font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800">
+                Đóng
+              </button>
+            </div>
           </div>
         </div>
+
+        <QRCodeModal v-if="showQRModal && shareInfo && editingDeck" :token="shareInfo.publicShareToken"
+          :deck-name="editingDeck.name" @close="showQRModal = false" />
       </div>
     </main>
   </div>
@@ -276,6 +332,8 @@ import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useDeckStore } from '@/stores/deck'
 import Sidebar from '@/components/Sidebar.vue'
+import QRCodeModal from '@/components/QRCodeModal.vue'
+import { publicSharingService, type PublicShareResponse } from '@/services/publicSharingService'
 import type { Deck } from '@/services/deck.service'
 
 const authStore = useAuthStore()
@@ -288,6 +346,9 @@ const showEditModal = ref(false)
 const newDeckName = ref('')
 const editDeckName = ref('')
 const editingDeck = ref<Deck | null>(null)
+const shareInfo = ref<PublicShareResponse | null>(null)
+const loadingShare = ref(false)
+const showQRModal = ref(false)
 
 const userDecks = computed(() => {
   let decks = deckStore.decks.filter(deck => deck.userId === authStore.user?.id && !deck.isPublic)
@@ -329,10 +390,67 @@ async function handleCreateDeck() {
   }
 }
 
-function editDeck(deck: Deck) {
+async function editDeck(deck: Deck) {
   editingDeck.value = deck
   editDeckName.value = deck.name
   showEditModal.value = true
+  await loadShareInfo(deck.id)
+}
+
+async function loadShareInfo(deckId: string) {
+  if (!authStore.accessToken) return
+  loadingShare.value = true
+  try {
+    shareInfo.value = await publicSharingService.getShareInfo(deckId, authStore.accessToken)
+  } catch (error) {
+    console.error('Failed to load share info', error)
+    shareInfo.value = null
+  } finally {
+    loadingShare.value = false
+  }
+}
+
+async function toggleSharing() {
+  if (!editingDeck.value || !authStore.accessToken) return
+
+  loadingShare.value = true
+  try {
+    if (shareInfo.value) {
+      await publicSharingService.disableSharing(editingDeck.value.id, authStore.accessToken)
+      shareInfo.value = null
+    } else {
+      shareInfo.value = await publicSharingService.enableSharing(editingDeck.value.id, authStore.accessToken)
+    }
+    await deckStore.fetchDecks()
+  } catch (error) {
+    alert('Failed to toggle sharing')
+    console.error(error)
+  } finally {
+    loadingShare.value = false
+  }
+}
+
+async function copyLink() {
+  if (shareInfo.value) {
+    await navigator.clipboard.writeText(shareInfo.value.publicShareUrl)
+    alert('Đã sao chép liên kết!')
+  }
+}
+
+async function regenerateToken() {
+  if (!editingDeck.value || !authStore.accessToken) return
+
+  if (confirm('Tạo lại token sẽ làm hỏng các liên kết cũ. Bạn có chắc chắn không?')) {
+    loadingShare.value = true
+    try {
+      shareInfo.value = await publicSharingService.regenerateToken(editingDeck.value.id, authStore.accessToken)
+      alert('Đã tạo lại token thành công!')
+    } catch (error) {
+      alert('Failed to regenerate token')
+    } finally {
+      loadingShare.value = false
+    }
+  }
 }
 
 async function handleUpdateDeck() {

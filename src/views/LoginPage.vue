@@ -7,8 +7,7 @@
         <div class="layout-content-container flex w-full max-w-md flex-col items-center mx-auto">
 
           <div class="mb-2 w-full text-center">
-            <p
-              class="text-3xl font-black leading-tight tracking-[-0.033em] text-yellow-500 sm:text-4xl dark:text-white">
+            <p class="text-3xl font-black leading-tight tracking-[-0.033em] text-black sm:text-4xl dark:text-white">
               Đăng Nhập
             </p>
             <br />

@@ -1,12 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import HomePage from '@/views/HomePage.vue'
+import HomePage from '@/views/home/HomePage.vue'
 import LoginPage from '@/views/LoginPage.vue'
 import RegisterPage from '@/views/RegisterPage.vue'
-import DashboardPage from '@/views/DashboardPage.vue'
-import FlashcardDeckPage from '@/views/FlashcardDeckPage.vue'
-import FlashcardLearnPage from '@/views/FlashcardLearnPage.vue'
-import ProfilePage from '@/views/ProfilePage.vue'
+import DashboardPage from '@/views/home/DashboardPage.vue'
+import FlashcardDeckPage from '@/views/flashcard/FlashcardDeckPage.vue'
+import FlashcardLearnPage from '@/views/flashcard/FlashcardLearnPage.vue'
+import ProfilePage from '@/views/home/ProfilePage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -50,20 +50,26 @@ const router = createRouter({
     {
       path: '/decks/:id/add',
       name: 'AddWords',
-      component: () => import('@/views/FlashcardAddWordsPage.vue'),
+      component: () => import('@/views/flashcard/FlashcardAddWordsPage.vue'),
       meta: { requiresAuth: true }
     },
     {
       path: '/decks/:id/edit',
       name: 'EditWords',
-      component: () => import('@/views/FlashcardEditWordsPage.vue'),
+      component: () => import('@/views/flashcard/FlashcardEditWordsPage.vue'),
       meta: { requiresAuth: true }
     },
     {
       path: '/favorites',
       name: 'Favorites',
-      component: () => import('@/views/FavoriteSentencesPage.vue'),
+      component: () => import('@/views/home/FavoriteSentencesPage.vue'),
       meta: { requiresAuth: true }
+    },
+    {
+      path: '/public/learn/:token',
+      name: 'PublicLearn',
+      component: () => import('@/views/flashcard/PublicLearnPage.vue'),
+      meta: { requiresAuth: false }
     },
     {
       path: '/profile',
