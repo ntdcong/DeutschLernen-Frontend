@@ -86,6 +86,7 @@ const authStore = useAuthStore()
 const navItems = [
   { path: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
   { path: '/decks', label: 'Học Từ Vựng', icon: 'translate' },
+  { path: '/dictionary', label: 'Từ điển', icon: 'book' },
   { path: '/favorites', label: 'Câu yêu thích', icon: 'favorite' },
   { path: '/profile', label: 'Hồ sơ', icon: 'person' },
 ]

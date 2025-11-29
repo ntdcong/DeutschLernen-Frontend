@@ -66,6 +66,12 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
+      path: '/dictionary',
+      name: 'Dictionary',
+      component: () => import('@/views/home/DictionaryPage.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
       path: '/public/learn/:token',
       name: 'PublicLearn',
       component: () => import('@/views/flashcard/PublicLearnPage.vue'),

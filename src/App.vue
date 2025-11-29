@@ -41,6 +41,7 @@ const hideFooter = computed(() => {
     '/decks/:id/add',
     '/decks/:id/edit',
     '/favorites',
+    '/dictionary',
   ]
   return pathsWithoutFooter.some(pattern => matchPath(pattern, route.path))
 })
