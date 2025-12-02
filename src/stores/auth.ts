@@ -27,14 +27,18 @@ export const useAuthStore = defineStore('auth', () => {
 
   // Initialize from localStorage
   function initializeAuth() {
-    const storedToken = localStorage.getItem('accessToken')
-    const storedRefreshToken = localStorage.getItem('refreshToken')
-    const storedUser = localStorage.getItem('user')
+    try {
+      const storedToken = localStorage.getItem('accessToken')
+      const storedRefreshToken = localStorage.getItem('refreshToken')
+      const storedUser = localStorage.getItem('user')
 
-    if (storedToken && storedRefreshToken && storedUser) {
-      accessToken.value = storedToken
-      refreshToken.value = storedRefreshToken
-      user.value = JSON.parse(storedUser)
+      if (storedToken && storedRefreshToken && storedUser) {
+        accessToken.value = storedToken
+        refreshToken.value = storedRefreshToken
+        user.value = JSON.parse(storedUser)
+      }
+    } catch (e) {
+      console.warn('Access to localStorage is restricted', e)
     }
   }
 
@@ -50,9 +54,14 @@ export const useAuthStore = defineStore('auth', () => {
       refreshToken.value = response.data.refreshToken
 
       // Persist to localStorage
-      localStorage.setItem('accessToken', response.data.accessToken)
-      localStorage.setItem('refreshToken', response.data.refreshToken)
-      localStorage.setItem('user', JSON.stringify(response.data.user))
+      // Persist to localStorage
+      try {
+        localStorage.setItem('accessToken', response.data.accessToken)
+        localStorage.setItem('refreshToken', response.data.refreshToken)
+        localStorage.setItem('user', JSON.stringify(response.data.user))
+      } catch (e) {
+        console.warn('Access to localStorage is restricted', e)
+      }
 
       return response
     } catch (err: any) {
@@ -75,9 +84,14 @@ export const useAuthStore = defineStore('auth', () => {
       refreshToken.value = response.data.refreshToken
 
       // Persist to localStorage
-      localStorage.setItem('accessToken', response.data.accessToken)
-      localStorage.setItem('refreshToken', response.data.refreshToken)
-      localStorage.setItem('user', JSON.stringify(response.data.user))
+      // Persist to localStorage
+      try {
+        localStorage.setItem('accessToken', response.data.accessToken)
+        localStorage.setItem('refreshToken', response.data.refreshToken)
+        localStorage.setItem('user', JSON.stringify(response.data.user))
+      } catch (e) {
+        console.warn('Access to localStorage is restricted', e)
+      }
 
       return response
     } catch (err: any) {
@@ -95,9 +109,13 @@ export const useAuthStore = defineStore('auth', () => {
     refreshToken.value = null
     error.value = null
 
-    localStorage.removeItem('accessToken')
-    localStorage.removeItem('refreshToken')
-    localStorage.removeItem('user')
+    try {
+      localStorage.removeItem('accessToken')
+      localStorage.removeItem('refreshToken')
+      localStorage.removeItem('user')
+    } catch (e) {
+      console.warn('Access to localStorage is restricted', e)
+    }
   }
 
   // Refresh access token
@@ -110,7 +128,11 @@ export const useAuthStore = defineStore('auth', () => {
       const response = await authService.refreshToken({ refreshToken: refreshToken.value })
       accessToken.value = response.data.accessToken
 
-      localStorage.setItem('accessToken', response.data.accessToken)
+      try {
+        localStorage.setItem('accessToken', response.data.accessToken)
+      } catch (e) {
+        console.warn('Access to localStorage is restricted', e)
+      }
 
       return response
     } catch (err) {

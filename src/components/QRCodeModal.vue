@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, onMounted } from 'vue';
 import { publicSharingService } from '@/services/publicSharingService';
 
 const props = defineProps<{
@@ -12,17 +12,18 @@ const emit = defineEmits<{
 }>();
 
 const qrCode = ref('');
-const type = ref<'simple' | 'custom'>('simple');
 const loading = ref(false);
 
-watch(type, loadQR, { immediate: true });
+onMounted(() => {
+    loadQR();
+});
 
 async function loadQR() {
     loading.value = true;
     try {
         qrCode.value = await publicSharingService.getQRCode(
             props.token,
-            type.value,
+            'simple',
             300 // Fixed size
         );
     } catch (error: any) {
@@ -30,24 +31,13 @@ async function loadQR() {
         if (error.response) {
             console.error('Error details:', error.response.data);
         }
-
-        // Fallback to simple if custom fails
-        if (type.value === 'custom') {
-            console.log('Falling back to simple QR code...');
-            try {
-                type.value = 'simple';
-                return;
-            } catch (e) {
-                console.error('Fallback failed', e);
-            }
-        }
     } finally {
         loading.value = false;
     }
 }
 
 function download() {
-    const url = publicSharingService.getQRDownloadUrl(props.token, type.value, 300);
+    const url = publicSharingService.getQRDownloadUrl(props.token, 'simple', 300);
     window.open(url, '_blank');
 }
 </script>
@@ -62,17 +52,6 @@ function download() {
                     class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
                     <span class="material-symbols-outlined">close</span>
                 </button>
-            </div>
-
-            <div class="mb-6 flex flex-col gap-4 sm:flex-row">
-                <label class="flex flex-1 flex-col">
-                    <span class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Kiểu dáng</span>
-                    <select v-model="type"
-                        class="rounded-xl border border-gray-300 px-3 py-2 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/50 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
-                        <option value="simple">Đơn giản</option>
-                        <option value="custom">Cách điệu</option>
-                    </select>
-                </label>
             </div>
 
             <div class="mb-6 flex min-h-[300px] items-center justify-center rounded-xl bg-gray-50 p-4 dark:bg-gray-800">

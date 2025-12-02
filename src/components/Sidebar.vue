@@ -13,7 +13,8 @@
     </button>
 
     <Transition name="fade">
-      <div v-if="isMobileMenuOpen" @click="closeMobileMenu" class="fixed inset-0 z-[90] bg-black/50 lg:hidden"></div>
+      <div v-if="isMobileMenuOpen" @click="closeMobileMenu" class="fixed inset-0 z-[90] bg-black/50 lg:hidden">
+      </div>
     </Transition>
 
     <Transition name="slide">

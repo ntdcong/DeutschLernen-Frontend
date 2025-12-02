@@ -104,14 +104,7 @@
             <div v-else class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               <div v-for="deck in userDecks" :key="deck.id"
                 class="group relative flex flex-col overflow-hidden rounded-2xl bg-surface-light shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl dark:bg-surface-dark">
-                <!-- Card Header with Gradient -->
-                <div class="h-24 bg-yellow-400 p-4 dark:from-blue-600 dark:to-cyan-600">
-                  <div class="flex justify-end">
-                    <!-- Menu Button (could be added here) -->
-                  </div>
-                </div>
-
-                <!-- Card Content -->
+                <div class="h-24 bg-yellow-400 p-4 dark:from-blue-600 dark:to-cyan-600"></div>
                 <div class="flex flex-grow flex-col p-5 pt-0">
                   <div
                     class="-mt-10 mb-3 flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-md dark:bg-gray-800">
@@ -154,13 +147,6 @@
                     </div>
                   </div>
                 </div>
-
-                <!-- Delete Button (Absolute) -->
-                <button @click="confirmDelete(deck)"
-                  class="absolute right-2 top-2 rounded-full bg-black/20 p-1.5 text-white opacity-0 transition-opacity hover:bg-red-500 group-hover:opacity-100"
-                  title="Xóa bộ từ vựng">
-                  <span class="material-symbols-outlined text-lg">delete</span>
-                </button>
               </div>
             </div>
           </div>
@@ -311,7 +297,16 @@
               </p>
             </div>
 
-            <div class="mt-8 flex justify-end">
+            <div class="mt-6 border-t border-gray-200 pt-6 dark:border-gray-700">
+              <h3 class="mb-2 text-sm font-bold text-red-600 dark:text-red-400">Nguy hiểm</h3>
+              <button @click="confirmDelete(editingDeck!)"
+                class="flex w-full items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 py-3 font-bold text-red-600 transition-colors hover:bg-red-100 dark:border-red-900/30 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/40">
+                <span class="material-symbols-outlined">delete</span>
+                Xóa bộ từ vựng này
+              </button>
+            </div>
+
+            <div class="mt-6 flex justify-end">
               <button type="button" @click="showEditModal = false"
                 class="rounded-xl px-5 py-2.5 font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800">
                 Đóng
@@ -466,9 +461,18 @@ async function handleUpdateDeck() {
   }
 }
 
-function confirmDelete(deck: Deck) {
+async function confirmDelete(deck: Deck) {
   if (confirm(`Bạn có chắc chắn muốn xóa bộ từ vựng "${deck.name}"?`)) {
-    deckStore.deleteDeck(deck.id)
+    try {
+      await deckStore.deleteDeck(deck.id)
+      if (editingDeck.value?.id === deck.id) {
+        showEditModal.value = false
+        editingDeck.value = null
+      }
+    } catch (error) {
+      console.error('Failed to delete deck:', error)
+      alert('Có lỗi xảy ra khi xóa bộ từ vựng')
+    }
   }
 }
 

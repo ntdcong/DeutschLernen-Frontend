@@ -11,9 +11,13 @@ const apiClient: AxiosInstance = axios.create({
 // Request interceptor to add JWT token
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const token = localStorage.getItem('accessToken')
-    if (token && config.headers) {
-      config.headers.Authorization = `Bearer ${token}`
+    try {
+      const token = localStorage.getItem('accessToken')
+      if (token && config.headers) {
+        config.headers.Authorization = `Bearer ${token}`
+      }
+    } catch (e) {
+      console.warn('Access to localStorage is restricted', e)
     }
     return config
   },
@@ -33,7 +37,13 @@ apiClient.interceptors.response.use(
       originalRequest._retry = true
 
       try {
-        const refreshToken = localStorage.getItem('refreshToken')
+        let refreshToken: string | null = null
+        try {
+          refreshToken = localStorage.getItem('refreshToken')
+        } catch (e) {
+          console.warn('Access to localStorage is restricted', e)
+        }
+
         if (!refreshToken) {
           throw new Error('No refresh token')
         }
@@ -43,7 +53,11 @@ apiClient.interceptors.response.use(
           { refreshToken }
         )
 
-        localStorage.setItem('accessToken', data.data.accessToken)
+        try {
+          localStorage.setItem('accessToken', data.data.accessToken)
+        } catch (e) {
+          console.warn('Access to localStorage is restricted', e)
+        }
 
         if (originalRequest.headers) {
           originalRequest.headers.Authorization = `Bearer ${data.data.accessToken}`
@@ -52,9 +66,13 @@ apiClient.interceptors.response.use(
         return apiClient(originalRequest)
       } catch (refreshError) {
         // Refresh failed, logout user
-        localStorage.removeItem('accessToken')
-        localStorage.removeItem('refreshToken')
-        localStorage.removeItem('user')
+        try {
+          localStorage.removeItem('accessToken')
+          localStorage.removeItem('refreshToken')
+          localStorage.removeItem('user')
+        } catch (e) {
+          console.warn('Access to localStorage is restricted', e)
+        }
         window.location.href = '/login'
         return Promise.reject(refreshError)
       }
