@@ -396,7 +396,7 @@ async function loadShareInfo(deckId: string) {
   if (!authStore.accessToken) return
   loadingShare.value = true
   try {
-    shareInfo.value = await publicSharingService.getShareInfo(deckId, authStore.accessToken)
+    shareInfo.value = await publicSharingService.getShareInfo(deckId)
   } catch (error) {
     console.error('Failed to load share info', error)
     shareInfo.value = null
@@ -411,10 +411,10 @@ async function toggleSharing() {
   loadingShare.value = true
   try {
     if (shareInfo.value) {
-      await publicSharingService.disableSharing(editingDeck.value.id, authStore.accessToken)
+      await publicSharingService.disableSharing(editingDeck.value.id)
       shareInfo.value = null
     } else {
-      shareInfo.value = await publicSharingService.enableSharing(editingDeck.value.id, authStore.accessToken)
+      shareInfo.value = await publicSharingService.enableSharing(editingDeck.value.id)
     }
     await deckStore.fetchDecks()
   } catch (error) {
@@ -438,7 +438,7 @@ async function regenerateToken() {
   if (confirm('Tạo lại token sẽ làm hỏng các liên kết cũ. Bạn có chắc chắn không?')) {
     loadingShare.value = true
     try {
-      shareInfo.value = await publicSharingService.regenerateToken(editingDeck.value.id, authStore.accessToken)
+      shareInfo.value = await publicSharingService.regenerateToken(editingDeck.value.id)
       alert('Đã tạo lại token thành công!')
     } catch (error) {
       alert('Failed to regenerate token')
