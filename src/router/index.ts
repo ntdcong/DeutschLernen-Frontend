@@ -60,6 +60,12 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
+      path: '/decks/:id/practice',
+      name: 'Practice',
+      component: () => import('@/views/flashcard/FlashcardPracticePage.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
       path: '/favorites',
       name: 'Favorites',
       component: () => import('@/views/home/FavoriteSentencesPage.vue'),
@@ -75,6 +81,12 @@ const router = createRouter({
       path: '/public/learn/:token',
       name: 'PublicLearn',
       component: () => import('@/views/flashcard/PublicLearnPage.vue'),
+      meta: { requiresAuth: false }
+    },
+    {
+      path: '/public/practice/:token',
+      name: 'PublicPractice',
+      component: () => import('@/views/flashcard/PublicPracticePage.vue'),
       meta: { requiresAuth: false }
     },
     {

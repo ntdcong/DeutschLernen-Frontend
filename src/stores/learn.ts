@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import type { Word } from '@/services/word.service'
+import type { Deck } from '@/services/deck.service'
 
 interface DeckCache {
   wordIds: string[]
@@ -8,12 +9,42 @@ interface DeckCache {
   totalWords: number
   lastFetched: number
   currentIndex: number // To resume progress
+  deckInfo?: Deck // Store deck info too
+}
+
+const STORAGE_KEY = 'germanly_learn_cache'
+const CACHE_DURATION = 30 * 60 * 1000 // 30 minutes
+
+// Load from sessionStorage on startup
+function loadFromStorage(): Record<string, DeckCache> {
+  try {
+    const stored = sessionStorage.getItem(STORAGE_KEY)
+    if (stored) {
+      return JSON.parse(stored)
+    }
+  } catch (e) {
+    console.error('Failed to load learn cache from storage:', e)
+  }
+  return {}
+}
+
+// Save to sessionStorage
+function saveToStorage(data: Record<string, DeckCache>) {
+  try {
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+  } catch (e) {
+    console.error('Failed to save learn cache to storage:', e)
+  }
 }
 
 export const useLearnStore = defineStore('learn', () => {
-  // Cache by deck ID
-  const deckCaches = ref<Record<string, DeckCache>>({})
-  const CACHE_DURATION = 30 * 60 * 1000 // 30 minutes
+  // Cache by deck ID - load from storage on init
+  const deckCaches = ref<Record<string, DeckCache>>(loadFromStorage())
+
+  // Watch for changes and persist
+  watch(deckCaches, (newVal) => {
+    saveToStorage(newVal)
+  }, { deep: true })
 
   function getCache(deckId: string): DeckCache | null {
     const cache = deckCaches.value[deckId]
@@ -56,6 +87,11 @@ export const useLearnStore = defineStore('learn', () => {
     delete deckCaches.value[deckId]
   }
 
+  function clearAllCaches() {
+    deckCaches.value = {}
+    sessionStorage.removeItem(STORAGE_KEY)
+  }
+
   return {
     deckCaches,
     getCache,
@@ -63,6 +99,8 @@ export const useLearnStore = defineStore('learn', () => {
     updateProgress,
     updateWord,
     addWords,
-    clearCache
+    clearCache,
+    clearAllCaches
   }
 })
+

@@ -20,6 +20,8 @@ function matchPath(pattern: string, path: string): boolean {
 const hideLayout = computed(() => {
   const pathsWithoutLayout = [
     '/decks/:id/learn',
+    '/decks/:id/practice',
+    '/public/practice/:token',
   ]
   return pathsWithoutLayout.some(pattern => matchPath(pattern, route.path))
 })
@@ -42,6 +44,7 @@ const hideFooter = computed(() => {
     '/decks/:id/edit',
     '/favorites',
     '/dictionary',
+    '/public/learn/:token',
   ]
   return pathsWithoutFooter.some(pattern => matchPath(pattern, route.path))
 })

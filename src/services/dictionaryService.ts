@@ -65,7 +65,9 @@ export interface DictionaryResult {
 
 export interface DictionaryResponse {
   found: boolean
+  found_related?: boolean  // For conjugated forms (ging -> gehen)
   key: string
+  type?: 'devi' | 'faztaa_related' | 'google_translate'  // Response type
   result: DictionaryResult[]
 }
 

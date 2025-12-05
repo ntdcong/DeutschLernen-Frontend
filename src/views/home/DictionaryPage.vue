@@ -82,7 +82,7 @@
           </div>
 
           <!-- No Results -->
-          <div v-else-if="!searchResult?.found"
+          <div v-else-if="!hasResults"
             class="flex flex-col items-center justify-center rounded-2xl bg-surface-light py-16 text-center dark:bg-surface-dark">
             <div class="mb-4 rounded-full bg-gray-50 p-6 dark:bg-gray-800">
               <span class="material-symbols-outlined text-5xl text-gray-300 dark:text-gray-600">search_off</span>
@@ -95,7 +95,34 @@
 
           <!-- Results -->
           <div v-else class="space-y-6">
-            <div v-for="(result, index) in searchResult.result" :key="result._id || index"
+            <!-- Related Word Banner (only for single word conjugated forms) -->
+            <div v-if="isConjugatedForm"
+              class="flex items-center gap-3 rounded-xl border-2 border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950/30">
+              <span class="material-symbols-outlined text-2xl text-blue-600 dark:text-blue-400">info</span>
+              <div>
+                <p class="font-semibold text-blue-800 dark:text-blue-300">
+                  Tìm thấy từ gốc của "{{ searchedTerm }}"
+                </p>
+                <p class="text-sm text-blue-600 dark:text-blue-400">
+                  Đây là từ chia/biến thể → hiển thị từ gốc bên dưới
+                </p>
+              </div>
+            </div>
+
+            <!-- Google Translate Notice -->
+            <div v-if="searchResult?.type === 'google_translate'"
+              class="flex items-center gap-3 rounded-xl border-2 border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-800 dark:bg-yellow-950/30">
+              <span class="material-symbols-outlined text-2xl text-yellow-600 dark:text-yellow-400">translate</span>
+              <div>
+                <p class="font-semibold text-yellow-800 dark:text-yellow-300">
+                  Kết quả từ Google Translate
+                </p>
+                <p class="text-sm text-yellow-600 dark:text-yellow-400">
+                  Từ này không có trong từ điển, hiển thị kết quả dịch tự động
+                </p>
+              </div>
+            </div>
+            <div v-for="(result, index) in searchResult?.result" :key="result._id || index"
               class="overflow-hidden rounded-2xl border border-black bg-surface-light shadow-md dark:bg-surface-dark">
               <!-- Word Header -->
               <div class="border-b-2 border-gray-50 p-6 dark:border-gray-800">
@@ -240,7 +267,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import Sidebar from '@/components/Sidebar.vue'
 import dictionaryService, { type DictionaryResponse } from '@/services/dictionaryService'
 
@@ -255,6 +282,36 @@ const showSuggestions = ref(false)
 const recentSearches = ref<string[]>([])
 const expandedExamples = ref<Set<string>>(new Set())
 const showAllExamplesSet = ref<Set<string>>(new Set())
+
+// Computed
+const hasResults = computed(() => {
+  if (!searchResult.value) return false
+  // Has results if found, found_related, or has result array with items
+  return searchResult.value.found ||
+    searchResult.value.found_related ||
+    (searchResult.value.result && searchResult.value.result.length > 0)
+})
+
+// Check if searched term is a single word (no spaces)
+const isSingleWordSearch = computed(() => {
+  return searchedTerm.value.trim().split(/\s+/).length === 1
+})
+
+// Check if this is a conjugated form (e.g., "ging" -> "gehen")
+// Single word, not found directly, but has results where keyword contains the search term
+const isConjugatedForm = computed(() => {
+  if (!isSingleWordSearch.value) return false
+  if (!searchResult.value) return false
+  if (searchResult.value.found) return false  // Direct match, not conjugated
+  if (!searchResult.value.result || searchResult.value.result.length === 0) return false
+
+  // Check if any result's keyword contains the searched term
+  const searchTermLower = searchedTerm.value.toLowerCase().trim()
+  return searchResult.value.result.some(r => {
+    if (!r.keyword) return false
+    return r.keyword.toLowerCase().includes(searchTermLower)
+  })
+})
 
 // Load recent searches from localStorage
 const loadRecentSearches = () => {
@@ -290,7 +347,8 @@ const handleSearch = async () => {
       source_lang: sourceLang.value
     })
 
-    if (searchResult.value.found) {
+    // Save to recent if found or found_related
+    if (searchResult.value.found || searchResult.value.found_related) {
       saveToRecentSearches(searchedTerm.value)
     }
   } catch (error) {

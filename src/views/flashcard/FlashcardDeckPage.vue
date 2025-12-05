@@ -101,50 +101,54 @@
               </button>
             </div>
 
-            <div v-else class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div v-else class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               <div v-for="deck in userDecks" :key="deck.id"
-                class="group relative flex flex-col overflow-hidden rounded-2xl bg-surface-light shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl dark:bg-surface-dark">
-                <div class="h-24 bg-yellow-400 p-4 dark:from-blue-600 dark:to-cyan-600"></div>
-                <div class="flex flex-grow flex-col p-5 pt-0">
-                  <div
-                    class="-mt-10 mb-3 flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-md dark:bg-gray-800">
-                    <span class="material-symbols-outlined text-3xl text-blue-500">style</span>
+                class="group relative flex flex-col overflow-hidden rounded-2xl border-2 border-black bg-surface-light p-4 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl dark:bg-surface-dark">
+                <!-- Header with icon and info -->
+                <div class="mb-3 flex items-start gap-3">
+                  <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-yellow-400 shadow-sm">
+                    <span class="material-symbols-outlined text-2xl text-white">style</span>
                   </div>
-
-                  <h3 class="mb-1 line-clamp-2 text-lg font-bold text-primary-black dark:text-white" :title="deck.name">
-                    {{ deck.name }}
-                  </h3>
-
-                  <div
-                    class="mb-4 flex items-center gap-2 text-sm text-text-secondary-light dark:text-text-secondary-dark">
-                    <span class="material-symbols-outlined text-base">format_list_bulleted</span>
-                    {{ deck.wordCount || 0 }} từ vựng
+                  <div class="min-w-0 flex-1">
+                    <h3 class="line-clamp-2 text-base font-bold text-primary-black dark:text-white" :title="deck.name">
+                      {{ deck.name }}
+                    </h3>
+                    <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">
+                      {{ deck.wordCount || 0 }} từ
+                    </p>
                   </div>
+                  <button @click="editDeck(deck)"
+                    class="rounded-lg p-1.5 text-black transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800"
+                    title="Cài đặt">
+                    <span class="material-symbols-outlined text-xl">settings</span>
+                  </button>
+                </div>
 
-                  <div class="mt-auto flex flex-col gap-3">
+                <!-- Action buttons -->
+                <div class="mt-auto space-y-2">
+                  <div class="grid grid-cols-2 gap-2">
                     <router-link :to="`/decks/${deck.id}/learn`"
-                      class="flex items-center justify-center gap-2 rounded-xl border border-primary bg-primary py-2.5 font-bold text-black transition-colors hover:bg-primary/90">
-                      <span class="material-symbols-outlined">play_circle</span>
-                      Học ngay
+                      class="flex items-center justify-center gap-1.5 border-2 border-black rounded-lg bg-primary py-2 text-sm font-bold text-black transition-colors hover:bg-primary/90">
+                      <span class="material-symbols-outlined text-lg">play_arrow</span>
+                      Học
                     </router-link>
-
-                    <div class="grid grid-cols-3 gap-2">
-                      <router-link :to="`/decks/${deck.id}/add`"
-                        class="flex items-center justify-center rounded-lg bg-gray-100 py-2 text-gray-600 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
-                        title="Thêm từ">
-                        <span class="material-symbols-outlined text-xl">add</span>
-                      </router-link>
-                      <router-link :to="`/decks/${deck.id}/edit`"
-                        class="flex items-center justify-center rounded-lg bg-gray-100 py-2 text-gray-600 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
-                        title="Chỉnh sửa">
-                        <span class="material-symbols-outlined text-xl">edit_note</span>
-                      </router-link>
-                      <button @click="editDeck(deck)"
-                        class="flex items-center justify-center rounded-lg bg-gray-100 py-2 text-gray-600 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
-                        title="Cài đặt">
-                        <span class="material-symbols-outlined text-xl">settings</span>
-                      </button>
-                    </div>
+                    <router-link :to="`/decks/${deck.id}/practice`"
+                      class="flex items-center justify-center gap-1.5 border-2 border-black rounded-lg bg-black py-2 text-sm font-bold text-white transition-colors hover:bg-black/80">
+                      <span class="material-symbols-outlined text-lg">quiz</span>
+                      Luyện tập
+                    </router-link>
+                  </div>
+                  <div class="grid grid-cols-2 gap-2">
+                    <router-link :to="`/decks/${deck.id}/add`"
+                      class="flex items-center justify-center gap-1 rounded-lg bg-gray-100 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700">
+                      <span class="material-symbols-outlined text-base">add</span>
+                      Thêm từ
+                    </router-link>
+                    <router-link :to="`/decks/${deck.id}/edit`"
+                      class="flex items-center justify-center gap-1 rounded-lg bg-gray-100 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700">
+                      <span class="material-symbols-outlined text-base">edit</span>
+                      Chỉnh sửa
+                    </router-link>
                   </div>
                 </div>
               </div>
@@ -153,46 +157,51 @@
 
           <!-- Public Decks -->
           <div v-if="publicDecks.length > 0">
-            <div class="mb-6 flex items-center gap-3">
+            <div class="mb-4 flex items-center gap-3">
               <span
-                class="flex h-8 w-8 items-center justify-center rounded-lg bg-yellow-100 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400">
-                <span class="material-symbols-outlined text-xl">public</span>
+                class="flex h-7 w-7 items-center justify-center rounded-lg bg-yellow-100 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400">
+                <span class="material-symbols-outlined text-lg">public</span>
               </span>
-              <h2 class="text-xl font-bold text-primary-black dark:text-white">
+              <h2 class="text-lg font-bold text-primary-black dark:text-white">
                 Thư viện Germanly
               </h2>
             </div>
 
-            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               <div v-for="deck in publicDecks" :key="deck.id"
-                class="group flex flex-col overflow-hidden rounded-2xl bg-surface-light shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl dark:bg-surface-dark">
-                <div class="h-24 bg-black p-4">
-                  <div class="flex justify-start">
-                    <span
-                      class="rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-bold text-white backdrop-blur-sm">
-                      OFFICIAL
-                    </span>
+                class="group flex flex-col overflow-hidden rounded-2xl border-2 border-black bg-surface-light p-4 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl dark:bg-surface-dark">
+                <!-- Header -->
+                <div class="mb-3 flex items-start gap-3">
+                  <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-black shadow-sm">
+                    <span class="material-symbols-outlined text-2xl text-yellow-400">school</span>
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <div class="mb-1 flex items-center gap-2">
+                      <h3 class="line-clamp-1 text-base font-bold text-primary-black dark:text-white">{{ deck.name }}
+                      </h3>
+                      <span
+                        class="shrink-0 rounded-full bg-yellow-100 px-1.5 py-0.5 text-[10px] font-bold text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">
+                        OFFICIAL
+                      </span>
+                    </div>
+                    <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">
+                      {{ deck.wordCount || 0 }} từ
+                    </p>
                   </div>
                 </div>
 
-                <div class="flex flex-grow flex-col p-5 pt-0">
-                  <div
-                    class="-mt-10 mb-3 flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-md dark:bg-gray-800">
-                    <span class="material-symbols-outlined text-3xl text-yellow-500">school</span>
-                  </div>
-
-                  <h3 class="mb-1 text-lg font-bold text-primary-black dark:text-white">{{ deck.name }}</h3>
-                  <p class="mb-4 text-sm text-text-secondary-light dark:text-text-secondary-dark">
-                    {{ deck.wordCount || 0 }} từ vựng
-                  </p>
-
-                  <div class="mt-auto">
-                    <router-link :to="`/decks/${deck.id}/learn`"
-                      class="flex w-full items-center justify-center gap-2 rounded-xl bg-gray-100 py-2.5 font-bold text-gray-900 transition-colors hover:bg-primary hover:text-white dark:bg-gray-800 dark:text-white dark:hover:bg-primary">
-                      <span class="material-symbols-outlined">play_circle</span>
-                      Học ngay
-                    </router-link>
-                  </div>
+                <!-- Action buttons -->
+                <div class="mt-auto grid grid-cols-2 gap-2">
+                  <router-link :to="`/decks/${deck.id}/learn`"
+                    class="flex items-center justify-center gap-1.5 rounded-lg border-2 border-black bg-white py-2 text-sm font-bold text-black transition-colors hover:bg-black/80">
+                    <span class="material-symbols-outlined text-lg">play_arrow</span>
+                    Học
+                  </router-link>
+                  <router-link :to="`/decks/${deck.id}/practice`"
+                    class="flex items-center justify-center gap-1.5 rounded-lg border-2 border-black bg-black py-2 text-sm font-bold text-white transition-colors hover:bg-black/80">
+                    <span class="material-symbols-outlined text-lg">quiz</span>
+                    Luyện tập
+                  </router-link>
                 </div>
               </div>
             </div>
@@ -256,7 +265,7 @@
                   <input type="checkbox" :checked="!!shareInfo" @change="toggleSharing" :disabled="loadingShare"
                     class="peer sr-only">
                   <div
-                    class="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/30 dark:border-gray-600 dark:bg-gray-700">
+                    class="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-black peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-black/20 dark:border-gray-600 dark:bg-gray-700">
                   </div>
                 </label>
               </div>

@@ -676,7 +676,8 @@ async function initialize() {
 
     // Check cache first
     const cache = learnStore.getCache(deckId.value)
-    if (cache) {
+    if (cache && Object.keys(cache.words).length > 0) {
+      console.log('Using cached data for flashcard learn:', deckId.value)
       allWordIds.value = cache.wordIds
       Object.values(cache.words).forEach(w => loadedWords.value.set(w.id, w))
       totalWords.value = cache.totalWords
@@ -687,6 +688,7 @@ async function initialize() {
       return
     }
 
+    console.log('Fetching fresh data for flashcard learn:', deckId.value)
     await loadDeckInfo()
     if (totalWords.value === 0) {
       loading.value = false
@@ -699,15 +701,19 @@ async function initialize() {
       currentBatchIndex.value = 0
     }
 
-    // Save to cache
+    // Save to cache with deckInfo
     const wordsRecord: Record<string, Word> = {}
     loadedWords.value.forEach((v, k) => wordsRecord[k] = v)
+
+    // Get deck info for cache
+    const deckResponse = await deckService.getDeck(deckId.value)
 
     learnStore.setCache(deckId.value, {
       wordIds: allWordIds.value,
       words: wordsRecord,
       totalWords: totalWords.value,
-      currentIndex: 0
+      currentIndex: 0,
+      deckInfo: deckResponse.data
     })
 
     loading.value = false

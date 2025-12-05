@@ -150,6 +150,15 @@
                             <span class="material-symbols-outlined">chevron_right</span>
                         </button>
                     </div>
+
+                    <!-- Practice Button -->
+                    <div class="mt-4 flex justify-center">
+                        <router-link :to="`/public/practice/${route.params.token}`"
+                            class="flex items-center gap-2 rounded-xl border-2 border-black bg-white px-6 py-2.5 font-bold text-black shadow-sm transition hover:bg-black hover:text-white">
+                            <span class="material-symbols-outlined">quiz</span>
+                            Luyện tập
+                        </router-link>
+                    </div>
                 </div>
             </div>
         </main>
