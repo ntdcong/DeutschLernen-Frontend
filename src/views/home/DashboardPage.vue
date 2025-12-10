@@ -22,8 +22,22 @@
               <h1 class="font-display text-3xl font-bold tracking-tight text-primary-black sm:text-4xl dark:text-white">
                 Willkommen zurück, <span class="text-primary">{{ authStore.user?.fullName || 'Bạn' }}</span>!
               </h1>
-              <p class="mt-2 text-lg text-text-secondary-light dark:text-text-secondary-dark max-w-2xl">
+              <!-- Quote Section -->
+              <div v-if="loadingQuote" class="mt-2 flex items-center gap-2">
+                <div class="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
+                <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">Đang tải quote...</p>
+              </div>
+
+              <div v-else-if="quote" class="mt-2 max-w-2xl">
+                <p class="text-lg italic text-text-secondary-light dark:text-text-secondary-dark">
+                  <span class="text-primary font-bold">"</span>{{ quote }}<span class="text-primary font-bold">"</span>
+                </p>
+              </div>
+
+              <p v-else class="mt-2 text-lg text-text-secondary-light dark:text-text-secondary-dark max-w-2xl">
                 Có hứng học chưa? Hay không tự giác được!
+                <button @click="fetchQuote" class="text-primary hover:text-primary/80 font-semibold ml-1 text-sm">Tải
+                  quote</button>
               </p>
             </div>
 
@@ -228,13 +242,17 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useDeckStore } from '@/stores/deck'
 import Sidebar from '@/components/Sidebar.vue'
 
 const authStore = useAuthStore()
 const deckStore = useDeckStore()
+
+// Quote state
+const quote = ref<string>('')
+const loadingQuote = ref(false)
 
 const currentDate = computed(() => {
   return new Date().toLocaleDateString('vi-VN', {
@@ -251,11 +269,34 @@ const recentDecks = computed(() => {
   return deckStore.decks.slice(0, 4)
 })
 
+// Fetch random quote from API
+const fetchQuote = async () => {
+  loadingQuote.value = true
+  try {
+    const response = await fetch('https://n8n.germanly.io.vn/webhook/test-groq')
+    const data = await response.json()
+
+    // Extract the quote from the response
+    if (data.choices && data.choices[0]?.message?.content) {
+      quote.value = data.choices[0].message.content
+    } else {
+      quote.value = ''
+    }
+  } catch (error) {
+    console.error('Failed to fetch quote:', error)
+    quote.value = ''
+  } finally {
+    loadingQuote.value = false
+  }
+}
+
 onMounted(async () => {
   try {
     if (deckStore.decks.length === 0) {
       await deckStore.fetchDecks()
     }
+    // Fetch quote on page load
+    await fetchQuote()
   } catch (error) {
     console.error('Failed to load decks:', error)
   }
