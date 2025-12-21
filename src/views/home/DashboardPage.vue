@@ -109,6 +109,19 @@
                 </div>
               </div>
             </div>
+            <!-- Quick Action: Writing Practice -->
+            <router-link to="/writing-practice"
+              class="flex items-center gap-4 p-4 rounded-2xl bg-white border border-border-light shadow-sm hover:shadow-md hover:border-primary/30 transition-all group dark:bg-surface-dark dark:border-border-dark">
+              <div
+                class="size-12 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center group-hover:bg-orange-600 group-hover:text-white transition-colors dark:bg-orange-900/20 dark:text-orange-400">
+                <span class="material-symbols-outlined">edit_note</span>
+              </div>
+              <div>
+                <p class="font-bold text-primary-black dark:text-white">Luyện viết</p>
+                <p class="text-xs text-text-secondary-light dark:text-text-secondary-dark font-medium">Viết theo chủ đề
+                </p>
+              </div>
+            </router-link>
 
             <!-- Recent Decks -->
             <div>
@@ -206,14 +219,14 @@
                   <span class="text-xs font-bold">Tạo bộ từ</span>
                 </router-link>
 
-                <button
-                  class="flex flex-col items-center justify-center gap-2 rounded-2xl bg-gray-50 p-4 text-center transition-all hover:bg-purple-50 hover:text-purple-600 dark:bg-gray-800 dark:hover:bg-purple-900/20 dark:hover:text-purple-400">
+                <router-link to="/writing-practice"
+                  class="flex flex-col items-center justify-center gap-2 rounded-2xl bg-gray-50 p-4 text-center transition-all hover:bg-orange-50 hover:text-orange-600 dark:bg-gray-800 dark:hover:bg-orange-900/20 dark:hover:text-orange-400">
                   <div
                     class="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm text-inherit dark:bg-gray-700">
-                    <span class="material-symbols-outlined">casino</span>
+                    <span class="material-symbols-outlined">edit_note</span>
                   </div>
-                  <span class="text-xs font-bold">Ôn ngẫu nhiên</span>
-                </button>
+                  <span class="text-xs font-bold">Luyện viết</span>
+                </router-link>
 
                 <router-link to="/dictionary"
                   class="flex flex-col items-center justify-center gap-2 rounded-2xl bg-gray-50 p-4 text-center transition-all hover:bg-green-50 hover:text-green-600 dark:bg-gray-800 dark:hover:bg-green-900/20 dark:hover:text-green-400">

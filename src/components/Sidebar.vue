@@ -89,6 +89,7 @@ const navItems = [
   { path: '/decks', label: 'Học Từ Vựng', icon: 'translate' },
   { path: '/dictionary', label: 'Từ điển', icon: 'book' },
   { path: '/favorites', label: 'Câu yêu thích', icon: 'favorite' },
+  { path: '/writing-practice', label: 'Luyện Viết', icon: 'edit_note' },
   { path: '/profile', label: 'Hồ sơ', icon: 'person' },
 ]
 

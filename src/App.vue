@@ -22,6 +22,7 @@ const hideLayout = computed(() => {
     '/decks/:id/learn',
     '/decks/:id/practice',
     '/public/practice/:token',
+    '/writing-practice'
   ]
   return pathsWithoutLayout.some(pattern => matchPath(pattern, route.path))
 })

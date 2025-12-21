@@ -94,6 +94,12 @@ const router = createRouter({
       name: 'Profile',
       component: ProfilePage,
       meta: { requiresAuth: true }
+    },
+    {
+      path: '/writing-practice',
+      name: 'WritingPractice',
+      component: () => import('@/views/home/WritingPracticePage.vue'),
+      meta: { requiresAuth: true }
     }
   ]
 })
