@@ -209,7 +209,7 @@
                 <span class="material-symbols-outlined text-yellow-500">bolt</span>
                 Thao tác nhanh
               </h3>
-              <div class="grid grid-cols-2 gap-3">
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 <router-link to="/decks"
                   class="flex flex-col items-center justify-center gap-2 rounded-2xl bg-gray-50 p-4 text-center transition-all hover:bg-blue-50 hover:text-blue-600 dark:bg-gray-800 dark:hover:bg-blue-900/20 dark:hover:text-blue-400">
                   <div
@@ -235,6 +235,15 @@
                     <span class="material-symbols-outlined">search</span>
                   </div>
                   <span class="text-xs font-bold">Tra từ điển</span>
+                </router-link>
+
+                <router-link to="/shadowing"
+                  class="flex flex-col items-center justify-center gap-2 rounded-2xl bg-gray-50 p-4 text-center transition-all hover:bg-purple-50 hover:text-purple-600 dark:bg-gray-800 dark:hover:bg-purple-900/20 dark:hover:text-purple-400">
+                  <div
+                    class="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm text-inherit dark:bg-gray-700">
+                    <span class="material-symbols-outlined">record_voice_over</span>
+                  </div>
+                  <span class="text-xs font-bold">Luyện phát âm</span>
                 </router-link>
 
                 <router-link to="/profile"

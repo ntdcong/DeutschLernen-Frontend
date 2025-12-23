@@ -100,6 +100,12 @@ const router = createRouter({
       name: 'WritingPractice',
       component: () => import('@/views/home/WritingPracticePage.vue'),
       meta: { requiresAuth: true }
+    },
+    {
+      path: '/shadowing',
+      name: 'Shadowing',
+      component: () => import('@/views/home/ShadowingPractice.vue'),
+      meta: { requiresAuth: true }
     }
   ]
 })
