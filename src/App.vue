@@ -24,6 +24,11 @@ const hideLayout = computed(() => {
     '/public/practice/:token',
     '/writing-practice',
     '/shadowing',
+    '/admin',
+    '/admin/users',
+    '/admin/decks',
+    '/admin/shadowing',
+    '/admin/settings',
   ]
   return pathsWithoutLayout.some(pattern => matchPath(pattern, route.path))
 })

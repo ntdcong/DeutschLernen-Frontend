@@ -20,6 +20,11 @@ class UserService {
     return response.data
   }
 
+  async getAllUsers(): Promise<{ statusCode: number, data: User[] }> {
+    const response = await apiClient.get< { statusCode: number, data: User[] }>('/users')
+    return response.data
+  }
+
   async getCurrentUser(): Promise<UserResponse> {
     const response = await apiClient.get<UserResponse>('/users/me')
     return response.data

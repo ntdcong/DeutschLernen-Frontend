@@ -60,6 +60,16 @@ const deckService = {
   async getWordCount(id: string): Promise<ApiResponse<{ count: number }>> {
     const response = await apiClient.get(`/decks/${id}/word-count`)
     return response.data
+  },
+
+  async enablePublicShare(id: string): Promise<ApiResponse<void>> {
+    const response = await apiClient.post(`/decks/${id}/public-share/enable`)
+    return response.data
+  },
+
+  async disablePublicShare(id: string): Promise<ApiResponse<void>> {
+    const response = await apiClient.delete(`/decks/${id}/public-share/disable`)
+    return response.data
   }
 }
 

@@ -102,6 +102,33 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
+      path: '/admin',
+      component: () => import('@/views/admin/AdminLayout.vue'),
+      meta: { requiresAuth: true, requiresAdmin: true },
+      children: [
+        {
+          path: '',
+          name: 'AdminDashboard',
+          component: () => import('@/views/admin/AdminDashboard.vue')
+        },
+        {
+          path: 'users',
+          name: 'AdminUsers',
+          component: () => import('@/views/admin/UserManagement.vue')
+        },
+        {
+          path: 'shadowing',
+          name: 'AdminShadowing',
+          component: () => import('@/views/admin/ShadowingManagement.vue')
+        },
+        {
+          path: 'decks',
+          name: 'AdminDecks',
+          component: () => import('@/views/admin/DeckManagement.vue')
+        }
+      ]
+    },
+    {
       path: '/shadowing',
       name: 'Shadowing',
       component: () => import('@/views/home/ShadowingPractice.vue'),
@@ -123,6 +150,13 @@ router.beforeEach((to, from, next) => {
   // Check if route requires authentication
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     next({ name: 'Login', query: { redirect: to.fullPath } })
+    return
+  }
+
+  // Check if route requires admin
+  if (to.meta.requiresAdmin && !authStore.isAdmin) {
+    // If user is logged in but not admin, redirect to user dashboard
+    next({ name: 'Dashboard' })
     return
   }
 

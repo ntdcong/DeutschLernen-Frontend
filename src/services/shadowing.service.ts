@@ -127,6 +127,32 @@ class ShadowingService {
     const response = await apiClient.post(`/shadowing/texts/${id}/favorite`)
     return response.data
   }
+
+  // --- Admin Methods ---
+
+  /**
+   * Create a new shadowing text (Admin only)
+   */
+  async createText(data: Omit<ShadowingText, 'id' | 'createdAt' | 'updatedAt' | 'practiceCount' | 'isActive'>): Promise<SingleTextResponse> {
+    const response = await apiClient.post('/shadowing/admin/texts', data)
+    return response.data
+  }
+
+  /**
+   * Update an existing shadowing text (Admin only)
+   */
+  async updateText(id: string, data: Partial<ShadowingText>): Promise<SingleTextResponse> {
+    const response = await apiClient.put(`/shadowing/admin/texts/${id}`, data)
+    return response.data
+  }
+
+  /**
+   * Delete a shadowing text (Admin only)
+   */
+  async deleteText(id: string): Promise<any> {
+    const response = await apiClient.delete(`/shadowing/admin/texts/${id}`)
+    return response.data
+  }
 }
 
 export default new ShadowingService()
