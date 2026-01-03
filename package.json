@@ -11,7 +11,7 @@
     "start": "serve -s dist -l 3000",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
-    "build-only": "vite build && powershell -Command \"Copy-Item dist/index.html dist/404.html\"",
+    "build-only": "vite build && node -e \"require('fs').copyFileSync('dist/index.html','dist/404.html')\"",
     "type-check": "vue-tsc --build",
     "lint": "eslint . --fix --cache",
     "format": "prettier --write src/"
