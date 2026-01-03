@@ -388,7 +388,7 @@ function speakWordByWord(wordIndex: number) {
 
     wordUtterance.onend = () => {
         // Move to next word after calculated pause
-        if (isSpeaking.value) {
+        if (isSpeaking.value && word) {
             const nextWord = words.value[wordIndex + 1]
             const pauseMs = calculatePauseDuration(word, nextWord, speechRate.value)
 
