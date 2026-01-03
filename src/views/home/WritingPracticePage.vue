@@ -1,5 +1,5 @@
 <template>
-    <div class="relative flex min-h-screen w-full bg-gray-50 dark:bg-gray-900 font-sans transition-colors duration-300">
+    <div class="relative flex min-h-screen w-full bg-white dark:bg-gray-900 transition-colors duration-300">
         <Sidebar />
 
         <main class="flex-1 w-full transition-all duration-300">

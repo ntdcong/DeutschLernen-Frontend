@@ -119,10 +119,10 @@
           <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-3xl mx-auto mb-16">
               <h2 class="font-display text-3xl font-bold text-text-primary-light dark:text-white sm:text-4xl mb-4">
-                Mọi thứ bạn cần để giỏi tiếng Đức
+                Mọi thứ bạn cần để học tiếng Đức
               </h2>
               <p class="text-lg text-text-secondary-light dark:text-text-secondary-dark">
-                Tích hợp các phương pháp học tập hiện đại nhất vào một nền tảng duy nhất.
+                Tích hợp các phương pháp học tập hiện đại.
               </p>
             </div>
 

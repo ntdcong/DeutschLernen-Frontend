@@ -19,11 +19,16 @@ function matchPath(pattern: string, path: string): boolean {
 
 const hideLayout = computed(() => {
   const pathsWithoutLayout = [
+    '/dashboard',
     '/decks/:id/learn',
+    '/decks',
+    '/dictionary',
+    '/favorites',
     '/decks/:id/practice',
     '/public/practice/:token',
     '/writing-practice',
     '/shadowing',
+    '/profile',
     '/admin',
     '/admin/users',
     '/admin/decks',
@@ -43,14 +48,6 @@ const hideHeader = computed(() => {
 
 const hideFooter = computed(() => {
   const pathsWithoutFooter = [
-    '/dashboard',
-    '/decks',
-    '/profile',
-    '/decks/:id/learn',
-    '/decks/:id/add',
-    '/decks/:id/edit',
-    '/favorites',
-    '/dictionary',
     '/public/learn/:token',
   ]
   return pathsWithoutFooter.some(pattern => matchPath(pattern, route.path))

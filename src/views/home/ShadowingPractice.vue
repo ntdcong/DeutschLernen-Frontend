@@ -1,5 +1,5 @@
 <template>
-    <div class="relative flex min-h-screen w-full bg-gray-50 dark:bg-gray-900 font-sans transition-colors duration-300">
+    <div class="relative flex min-h-screen w-full bg-white dark:bg-gray-900 transition-colors duration-300">
         <Sidebar />
 
         <main class="flex-1 w-full transition-all duration-300">
@@ -266,11 +266,9 @@ const isSpeaking = ref(false)
 const speechRate = ref(1)
 const selectedVoice = ref<SpeechSynthesisVoice | null>(null)
 const germanVoices = ref<SpeechSynthesisVoice[]>([])
-const utterance = ref<SpeechSynthesisUtterance | null>(null)
 
-// Word-by-word speaking state
-const currentSpeakingWordIndex = ref(-1)
-const isSpeakingWordByWord = ref(false)
+// Word-by-word TTS state
+const pausedAtWordIndex = ref(-1)
 
 // --- COMPUTED ---
 const filteredTexts = computed(() => {
@@ -344,24 +342,38 @@ function loadGermanVoices() {
     }
 }
 
+// Calculate pause between words based on speech rate and punctuation
+function calculatePauseDuration(currentWord: string, nextWord: string | undefined, rate: number): number {
+    // Base pause decreases with faster speech rate
+    // 0.75x → 200ms, 1x → 150ms, 1.25x → 120ms
+    const basePause = Math.round(180 / rate)
+
+    // Check if current word ends with punctuation
+    const hasPunctuation = /[.,!?;:]$/.test(currentWord)
+
+    if (hasPunctuation) {
+        // Longer pause after punctuation for natural flow
+        return basePause * 2
+    }
+
+    return basePause
+}
+
 // Word-by-word TTS - speaks each word individually for perfect highlighting
-function speakWordByWord() {
-    if (!selectedText.value || currentSpeakingWordIndex.value >= words.value.length) {
+function speakWordByWord(wordIndex: number) {
+    if (!selectedText.value || wordIndex >= words.value.length) {
         // Finished all words
         isSpeaking.value = false
-        isSpeakingWordByWord.value = false
         currentWordIndex.value = words.value.length - 1
         console.log('✅ Finished all words!')
         return
     }
 
-    const wordIdx = currentSpeakingWordIndex.value
-    const word = words.value[wordIdx]
-
-    console.log(`�️ Speaking [${wordIdx}]: "${word}"`)
+    const word = words.value[wordIndex]
+    console.log(`🗣️ Speaking [${wordIndex}]: "${word}"`)
 
     // Highlight this word NOW
-    currentWordIndex.value = wordIdx
+    currentWordIndex.value = wordIndex
 
     // Create utterance for just this one word
     const wordUtterance = new SpeechSynthesisUtterance(word)
@@ -374,21 +386,15 @@ function speakWordByWord() {
     wordUtterance.pitch = 1
     wordUtterance.volume = 1
 
-    wordUtterance.onstart = () => {
-        isSpeaking.value = true
-    }
-
     wordUtterance.onend = () => {
-        // Move to next word after small pause (natural)
-        if (isSpeakingWordByWord.value) {
-            currentSpeakingWordIndex.value++
-
-            // Fixed pause time - speed only affects word pronunciation, not pause
-            const pauseMs = 50
+        // Move to next word after calculated pause
+        if (isSpeaking.value) {
+            const nextWord = words.value[wordIndex + 1]
+            const pauseMs = calculatePauseDuration(word, nextWord, speechRate.value)
 
             setTimeout(() => {
-                if (isSpeakingWordByWord.value) {
-                    speakWordByWord() // Recursive: speak next word
+                if (isSpeaking.value) {
+                    speakWordByWord(wordIndex + 1)
                 }
             }, pauseMs)
         }
@@ -402,7 +408,6 @@ function speakWordByWord() {
         }
         console.error('❌ Error:', event.error)
         isSpeaking.value = false
-        isSpeakingWordByWord.value = false
     }
 
     // Speak this word
@@ -416,43 +421,46 @@ function startSpeaking() {
     speechSynthesis.cancel()
 
     // Start from beginning
-    currentSpeakingWordIndex.value = 0
     currentWordIndex.value = 0
-    isSpeakingWordByWord.value = true
+    pausedAtWordIndex.value = -1
     isSpeaking.value = true
 
-    //  Small delay then start
+    // Small delay then start
     setTimeout(() => {
-        speakWordByWord()
+        if (isSpeaking.value) {
+            speakWordByWord(0)
+        }
     }, 100)
 }
 
 function pauseSpeaking() {
-    console.log('⏸️ Pausing at word', currentSpeakingWordIndex.value)
+    console.log('⏸️ Pausing at word', currentWordIndex.value)
 
-    // Set flag to false - current word will finish then stop
-    isSpeakingWordByWord.value = false
+    pausedAtWordIndex.value = currentWordIndex.value
     isSpeaking.value = false
+    speechSynthesis.cancel()
 }
 
 function resumeSpeaking() {
-    console.log('▶️ Resuming from word', currentSpeakingWordIndex.value)
+    console.log('▶️ Resuming from word', pausedAtWordIndex.value)
 
-    // Resume from current position
-    isSpeakingWordByWord.value = true
+    // Resume from paused position
+    const resumeFrom = pausedAtWordIndex.value >= 0 ? pausedAtWordIndex.value : currentWordIndex.value
     isSpeaking.value = true
 
     setTimeout(() => {
-        speakWordByWord()
+        if (isSpeaking.value) {
+            speakWordByWord(Math.max(0, resumeFrom))
+        }
     }, 80)
 }
 
 function stopSpeaking() {
     console.log('⏹️ Stopping speech')
 
-    isSpeakingWordByWord.value = false
     isSpeaking.value = false
     speechSynthesis.cancel()
+    pausedAtWordIndex.value = -1
 }
 
 function togglePlay() {
@@ -462,7 +470,7 @@ function togglePlay() {
         pauseSpeaking()
     } else {
         // Check if resuming or starting fresh
-        if (currentSpeakingWordIndex.value > 0 && currentSpeakingWordIndex.value < words.value.length) {
+        if (pausedAtWordIndex.value >= 0 || currentWordIndex.value > 0) {
             resumeSpeaking()
         } else {
             startSpeaking()
@@ -471,26 +479,24 @@ function togglePlay() {
 }
 
 function onSpeedChange() {
-    console.log('🎚️ Speed →', speechRate.value)
+    console.log('🎚️ Speed changed to', speechRate.value)
 
     if (isSpeaking.value) {
-        // Restart from current word
-        const currentWord = currentSpeakingWordIndex.value
-        stopSpeaking()
+        // Pause, save position, then resume with new speed
+        const currentWord = currentWordIndex.value
+        pauseSpeaking()
 
         setTimeout(() => {
-            currentSpeakingWordIndex.value = currentWord
-            isSpeakingWordByWord.value = true
-            speakWordByWord()
-        }, 150)
+            pausedAtWordIndex.value = currentWord
+            resumeSpeaking()
+        }, 100)
     }
 }
 
 function resetPractice() {
     stopSpeaking()
     currentWordIndex.value = -1
-    currentSpeakingWordIndex.value = -1
-    isSpeaking.value = false
+    pausedAtWordIndex.value = -1
 }
 
 async function completePractice() {
@@ -501,12 +507,8 @@ async function completePractice() {
             shadowingTextId: selectedText.value.id
         })
 
-        // Show success message or update UI
         console.log('Progress saved!')
-
-        // Refresh to update practice count
         await fetchTexts()
-
         closeModal()
     } catch (error) {
         console.error('Failed to save progress:', error)

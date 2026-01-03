@@ -21,6 +21,11 @@
 
       <!-- Logged in -->
       <div v-else class="flex items-left gap-4">
+        <!-- Dashboard button -->
+        <router-link to="/dashboard"
+          class="flex items-center gap-2 border border-black rounded-lg px-3 py-2 group hover:bg-black hover:text-white dark:group-hover:bg-slate-800 transition-colors">
+          Học
+        </router-link>
         <!-- User Menu -->
         <div class="relative">
           <button @click="showUserMenu = !showUserMenu"
@@ -66,12 +71,15 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
 const authStore = useAuthStore()
 const router = useRouter()
+const route = useRoute()
 const showUserMenu = ref(false)
+
+const isHomePage = computed(() => route.path === '/')
 
 const userInitials = computed(() => {
   const name = authStore.user?.fullName || ''

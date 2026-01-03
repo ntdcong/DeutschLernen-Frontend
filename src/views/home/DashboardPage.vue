@@ -1,6 +1,5 @@
 <template>
-  <div
-    class="relative flex min-h-screen w-full bg-background-light dark:bg-background-dark font-sans selection:bg-primary/20">
+  <div class="relative flex min-h-screen w-full bg-background-light dark:bg-background-dark selection:bg-primary/20">
     <Sidebar />
 
     <main class="flex-1 p-4 pt-16 sm:p-6 lg:p-8 lg:pt-8">
@@ -286,8 +285,6 @@ const currentDate = computed(() => {
 })
 
 const recentDecks = computed(() => {
-  // Sort by updated at or created at if available, otherwise just take first 4
-  // Assuming decks are already sorted or we just take the top ones
   return deckStore.decks.slice(0, 4)
 })
 

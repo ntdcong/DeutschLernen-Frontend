@@ -62,6 +62,11 @@
           </div>
 
           <div class="flex flex-col gap-1 border-t border-gray-200 pt-3 dark:border-gray-700">
+            <button @click="router.push('/')"
+              class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-gray-600 hover:bg-yellow-100 dark:text-gray-300 dark:hover:bg-yellow-50">
+              <span class="material-symbols-outlined">home</span>
+              <p class="text-sm font-medium">Trang chủ</p>
+            </button>
             <button @click="handleLogout"
               class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20">
               <span class="material-symbols-outlined">logout</span>
