@@ -203,11 +203,6 @@
             <!-- Quick Actions -->
             <div
               class="rounded-3xl border border-border-light bg-white p-6 dark:border-border-dark dark:bg-surface-dark">
-              <h3
-                class="mb-6 font-display text-lg font-bold text-primary-black dark:text-white flex items-center gap-2">
-                <span class="material-symbols-outlined text-yellow-500">bolt</span>
-                Thao tác nhanh
-              </h3>
               <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 <router-link to="/decks"
                   class="flex flex-col items-center justify-center gap-2 rounded-2xl bg-gray-50 p-4 text-center transition-all hover:bg-blue-50 hover:text-blue-600 dark:bg-gray-800 dark:hover:bg-blue-900/20 dark:hover:text-blue-400">
